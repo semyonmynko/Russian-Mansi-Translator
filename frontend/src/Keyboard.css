@@ -1,0 +1,53 @@
+/* Keyboard.css */
+.keyboard-container {
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  .keyboard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .keyboard-row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+  
+  .keyboard-key {
+    padding: 10px 15px;
+    margin: 3px;
+    font-size: 18px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    user-select: none;
+  }
+  
+  .keyboard-key:active {
+    background-color: #d3d3d3;
+  }
+  
+  .keyboard-close {
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .keyboard-close:hover {
+    background-color: #d32f2f;
+  }  
