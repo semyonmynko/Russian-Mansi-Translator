@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Keyboard from 'react-simple-keyboard';
 import 'react-simple-keyboard/build/css/index.css';
@@ -40,12 +40,22 @@ function App() {
     }
   };
 
-  const handleSwapLanguages = () => {
-    setSourceLanguage(targetLanguage);
-    setTargetLanguage(sourceLanguage);
+  const swapLanguages = () => {
+    // Меняем местами языки
+    setSourceLanguage(prev => prev === 'ru' ? 'en' : 'ru');
+    setTargetLanguage(prev => prev === 'ru' ? 'en' : 'ru');
+
+    // Меняем местами тексты
     setSourceText(translatedText);
-    setTranslatedText('');
+    setTranslatedText(sourceText);
   };
+
+  // Используем useEffect, чтобы автоматически инициировать перевод после смены языков
+  useEffect(() => {
+    if (sourceText) {
+      handleTranslate(sourceText, sourceLanguage, targetLanguage);
+    }
+  }, [sourceLanguage, targetLanguage]);
 
   const handleCopyText = () => {
     navigator.clipboard.writeText(translatedText).then(() => {
@@ -86,15 +96,15 @@ function App() {
       <header className="header">
         <h1 className="title">Переводчик</h1>
         <div className="lang-selector">
-          <select value={sourceLanguage} onChange={(e) => setSourceLanguage(e.target.value)}>
-            <option value="ru">РУССКИЙ</option>
-            <option value="en">АНГЛИЙСКИЙ</option>
-          </select>
-          <button className="swap-button" onClick={handleSwapLanguages}>↔</button>
-          <select value={targetLanguage} onChange={(e) => setTargetLanguage(e.target.value)}>
-            <option value="ru">РУССКИЙ</option>
-            <option value="en">АНГЛИЙСКИЙ</option>
-          </select>
+          {/* Кнопки выбора языка, которые не меняют своего положения */}
+          <button className="lang-button">
+            {sourceLanguage === 'ru' ? 'РУССКИЙ' : 'АНГЛИЙСКИЙ'}
+          </button>
+          {/* Кнопка смены языка, которая всегда остается на месте */}
+          <button className="swap-button" onClick={swapLanguages}>↔</button>
+          <button className="lang-button">
+            {targetLanguage === 'ru' ? 'РУССКИЙ' : 'АНГЛИЙСКИЙ'}
+          </button>
         </div>
       </header>
 
