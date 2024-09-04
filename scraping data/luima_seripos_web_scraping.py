@@ -39,7 +39,7 @@ class LuimaParser():
                 # if russian:
                 #     russian_text = russian.get_text(separator='\n', strip=True)
                 mansi_monolingual.extend(self.get_sentences(mansi_text))
-        pd.Series(mansi_monolingual).to_csv('luima_seripos.csv')
+        pd.Series(mansi_monolingual).to_csv('data/luima_seripos.csv')
 
     def replace_mansi_symbols(self, mansi_text: str):
         # Ӯ, ӯ, ӈ, Ӣ, ӣ already in unicode
@@ -70,9 +70,8 @@ class LuimaParser():
         return mansi_text
     
     def get_sentences(self, text: str):
-        data = []
         sentences = nltk.sent_tokenize(text.replace('\n', ''))
-        sentences = re.split(r'(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|\!)\s+', text)
+        #sentences = re.split(r'(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|\!)\s+', text)
         return sentences
 
 
