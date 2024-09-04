@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "mansi-translation-app"
+version = "0.1.0"
+description = "Translation service using FastAPI and MarianMT"
+authors = ["Your Name <your.email@example.com>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.95.2"
+uvicorn = "^0.22.0"
+sqlalchemy = "^2.0"
+pydantic = ">=1.6.2,<2.0.0"
+psycopg2-binary = "^2.9.5"  # для PostgreSQL
+torch = {version = "^2.0", optional = true}
+transformers = "^4.32"
+numpy = "<2.0.0"  
+pandas = "^2.2.2"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.1"
+black = "^23.3"  # код-форматтер
+flake8 = "^6.0"  # линтер
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
