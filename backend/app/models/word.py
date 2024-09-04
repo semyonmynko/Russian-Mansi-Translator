@@ -5,5 +5,5 @@ class WordTranslation(Base):
 
     id = Column(Integer, primary_key=True)
     mansi_word = Column(String, nullable=False)
-    russian_word = Column(String, nullable=False)
+    russian_word = Column(String, nullable=True)
     definition = Column(Text, nullable=True)

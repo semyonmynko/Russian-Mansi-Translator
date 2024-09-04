@@ -1,3 +1,6 @@
 python -m venv .venv
 poetry install 
 poetry run uvicorn app.main:app --reload
+
+alembic revision --autogenerate -m "Initial migration for multiple tables"
+alembic upgrade head
