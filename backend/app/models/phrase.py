@@ -6,3 +6,4 @@ class PhraseTranslation(Base):
     id = Column(Integer, primary_key=True)
     mansi_phrase = Column(String, nullable=False)
     russian_phrase = Column(String, nullable=False)
+    topic = Column(String, nullable=True)

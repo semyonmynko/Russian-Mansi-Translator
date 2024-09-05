@@ -5,6 +5,7 @@ from pydantic import BaseModel
 class PhraseBase(BaseModel):
     mansi_phrase: str
     russian_phrase: str
+    topic: Optional[str] = None
 
 class PhraseCreate(PhraseBase):
     pass

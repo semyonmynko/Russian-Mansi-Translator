@@ -35,7 +35,9 @@ app.add_middleware(
 
 @api_router.post("/translate", status_code=200, response_model=TranslationResponse)
 async def translate_text(request: TranslationRequest):
-
+    """
+    Эндпоинт перевода.
+    """
     translated_text = perform_translation(request=request)
     print(translated_text)
 
@@ -49,6 +51,9 @@ async def add_word(
     db: Session = Depends(get_db),
     word_in: SuggestedWordCreate
 ):
+    """
+    Эндпоинт для добавления слова и его перевода.
+    """
     try:
         return suggested_word.create(db=db, obj_in=word_in)
     except IntegrityError as e:
@@ -83,6 +88,9 @@ async def add_phrase(
     db: Session = Depends(get_db),
     phrase_in: SuggestedPhraseCreate
 ):
+    """
+    Эндпоинт для добавления фразы и ее перевода.
+    """
     try:
         return suggested_phrase.create(db=db, obj_in=phrase_in)
     except IntegrityError as e:
@@ -95,6 +103,7 @@ async def add_phrase(
 async def search_phrases(
     query: str, 
     language: str = Query(..., regex="^(mansi|russian)$"), 
+    topic: str = None,
     skip: int = 0, 
     limit: int = 100, 
     db: Session = Depends(get_db)
@@ -103,7 +112,7 @@ async def search_phrases(
     Эндпоинт для поиска фраз по заданному запросу в указанном языке.
     """
     try:
-        results = phrase.search(db, query=query, language=language, skip=skip, limit=limit)
+        results = phrase.search(db, query=query, language=language, topic=topic, skip=skip, limit=limit)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     return results
