@@ -17,10 +17,9 @@ from app.schemas.suggested_word import SuggestedWordCreate
 from app.crud.suggested_phrase import suggested_phrase
 from app.schemas.suggested_phrase import SuggestedPhraseCreate
 
-#from api.deps import get_db
+from app.auth import verify_token
 
-
-app = FastAPI(title="Mansi translator API")
+app = FastAPI(title="Mansi translator API", dependencies=[Depends(verify_token)])
 
 api_router = APIRouter()
 
