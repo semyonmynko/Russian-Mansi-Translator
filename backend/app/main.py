@@ -45,7 +45,7 @@ async def translate_text(request: TranslationRequest):
 
 
 #===WORD===
-@api_router.post("/add/word", status_code=200, response_model=Word)
+@api_router.post("/add/word", status_code=201, response_model=Word)
 async def add_word(
     *,
     db: Session = Depends(get_db),
@@ -62,7 +62,7 @@ async def add_word(
         raise HTTPException(status_code=500, detail="An unexpected error occurred") from e
 
 
-@api_router.get("/search/word", status_code=201, response_model=list[Word])
+@api_router.get("/search/word", status_code=200, response_model=list[Word])
 async def search_words(
     query: str, 
     language: str = Query(..., regex="^(mansi|russian)$"), 
@@ -82,7 +82,7 @@ async def search_words(
 
 
 #===PHRASE===
-@api_router.post("/add/phrase", status_code=200, response_model=Phrase)
+@api_router.post("/add/phrase", status_code=201, response_model=Phrase)
 async def add_phrase(
     *,
     db: Session = Depends(get_db),
@@ -99,7 +99,7 @@ async def add_phrase(
         raise HTTPException(status_code=500, detail="An unexpected error occurred") from e
 
 
-@api_router.get("/search/phrase", status_code=201, response_model=list[Phrase])
+@api_router.get("/search/phrase", status_code=200, response_model=list[Phrase])
 async def search_phrases(
     query: str, 
     language: str = Query(..., regex="^(mansi|russian)$"), 
