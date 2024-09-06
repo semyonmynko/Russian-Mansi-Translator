@@ -4,10 +4,60 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Переводчик мансийского языка</title>
-	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <script>
+        // Функция для отправки текста на сервер и получения перевода
+        async function translateText() {
+            const inputText = document.getElementById("inputText").value;
+            const sourceLang = document.getElementById("source_lang").textContent;
+            const targetLang = document.getElementById("target_lang").textContent;
+
+            // Отправляем запрос на сервер через Fetch API
+            const response = await fetch("/translate", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    text: inputText,
+                    source_lang: sourceLang,
+                    target_lang: targetLang
+                })
+            });
+
+            // Обработка ответа от сервера
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById("translatedText").textContent = data.translated_text;
+            } else {
+                console.error("Ошибка перевода");
+            }
+        }
+
+		function clearText() {
+            document.getElementById("inputText").value = "";
+            document.getElementById("translatedText").textContent = "";
+        }
+
+        // Функция для смены языков
+        function switchLanguages() {
+            let sourceLang = document.getElementById("source_lang").textContent;
+            let targetLang = document.getElementById("target_lang").textContent;
+            document.getElementById("source_lang").textContent = targetLang;
+            document.getElementById("target_lang").textContent = sourceLang;
+        }
+
+        // Обработка нажатия Enter для отправки текста
+        function handleEnterKey(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                translateText();
+            }
+        }
+    </script>
 </head>
 <body>
 	<section class="header__wrap">
@@ -39,11 +89,11 @@
 		</header>
 		<div class="tittle_background__warp">
 			<div class="big_patterns_bg">
-				<img src="images/big_pattern_bg.svg">
-				<img src="images/big_pattern_bg.svg">
+				<img src="{{ url_for('static', path='images/big_pattern_bg.svg') }}">
+				<img src="{{ url_for('static', path='images/big_pattern_bg.svg') }}">
 			</div>
 			<div class="pattern_line_bg">
-				<img src="images/pattern_line_bg.svg">
+				<img src="{{ url_for('static', path='images/pattern_line_bg.svg') }}">
 			</div>
 		</div>
 	</section>
@@ -55,12 +105,12 @@
 
 					<div class="form_trasnlation" margin="24px">
 						<div class="form_translation_header">
-							<p>РУССКИЙ</p>
+							<p id="source_lang">РУССКИЙ</p>
 						</div>
 						<div class="form_translation_body">
-							<textarea placeholder="Начните писать здесь..."></textarea>
+							<textarea id="inputText" placeholder="Начните писать здесь..." onkeydown="handleEnterKey(event)"></textarea>
 							<div>
-								<a class="icon_button">
+								<a class="icon_button" onclick="clearText()">
 									<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_6_560)">
 									<path fill-rule="evenodd" clip-rule="evenodd" d="M59.1722 64L0 4.82782L4.82781 1.50135e-06L64 59.1722L59.1722 64Z" fill="#0E0909"/>
 									<path fill-rule="evenodd" clip-rule="evenodd" d="M64 4.82781L4.82782 64L1.18773e-06 59.1722L59.1722 0L64 4.82781Z" fill="#0E0909"/></g><defs><clipPath id="clip0_6_560"><rect width="64" height="64" fill="white"/></clipPath></defs>
@@ -70,21 +120,21 @@
 						</div>
 						<div class="form_translation_footer">
 							<ul class="form_footer_menu">
-								<a href="" class="icon_button"><img src="images/icons/volume.svg"></a>
-								<a href="" class="icon_button"><img src="images/icons/microphone.svg"></a>
-								<a href="" class="icon_button"><img src="images/icons/copy.svg"></a>
+								<a href="" class="icon_button"><img src="{{ url_for('static', path='images/icons/volume.svg') }}"></a>
+								<a href="" class="icon_button"><img src="{{ url_for('static', path='images/icons/microphone.svg') }}"></a>
+								<a href="" class="icon_button"><img src="{{ url_for('static', path='images/icons/copy.svg') }}"></a>
 							</ul>
 							<ul class="form_footer_menu">
 								<div class="number_of_characters">
 									<p>0</p><p>/5000</p>
 								</div>
-								<a href="" class="icon_button"><img src="images/icons/keyboard.svg"></a>
+								<a href="" class="icon_button"><img src="{{ url_for('static', path='images/icons/keyboard.svg') }}"></a>
 							</ul>
 						</div>
 					</div>
 
 					<div class="change_translation__wrap">
-						<a href="" class="change_translation">
+						<a class="change_translation" onclick="switchLanguages()">
 							<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<g clip-path="url(#clip0_1_47)"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.45403 25.6742L16.9079 34.1747L19.9522 31.1167L22.9965 28.0588L19.6585 24.6986L16.3205 21.3385L29.9729 21.3385L43.6254 21.3385L43.6254 17.0873L43.6254 12.8362L29.9729 12.8362L16.3205 12.8362L19.6585 9.47603L22.9965 6.11591L19.9522 3.05796L16.9079 -7.39067e-07L8.45403 8.50047C3.8042 13.1757 -2.00898e-06 17.0399 -2.00691e-06 17.0873C-2.00483e-06 17.1348 3.8042 20.9989 8.45403 25.6742ZM33.9434 50.2465L47.5958 50.2465L44.2174 53.6472L40.8388 57.0482L43.7943 60.024C45.42 61.6609 46.8271 63 46.9215 63C47.0159 63 50.8972 59.1738 55.5465 54.4975L64 45.9948L55.5044 37.4513L47.0087 28.9076L43.9643 31.9658L40.9198 35.0239L44.2578 38.384L47.5958 41.7441L33.9434 41.7441L20.2909 41.7441L20.2909 45.9953L20.2909 50.2465L33.9434 50.2465Z" fill="#0E0909"/></g><defs><clipPath id="clip0_1_47"><rect width="64" height="64" fill="white"/></clipPath></defs>
 							</svg>
@@ -93,26 +143,25 @@
 
 					<div class="form_trasnlation">
 						<div class="form_translation_header">
-							<p>МАНСИЙСКИЙ</p>
+							<p id="target_lang">МАНСИЙСКИЙ</p>
 						</div>
 						<div class="form_translation_body">
-							<p class="translation_result2">Пример перевода</p>
+							<textarea id="translatedText" placeholder="Ваш перевод будет здесь..." class="translation_result2"></textarea>
 							<div>
 								<a class="icon_button">
 									<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
 									<path fill-rule="evenodd" clip-rule="evenodd" d="M19.7559 3V6H34.5118H49.2678V31.2681V56.5364L54.6 56.5015L59.9323 56.4667L59.9661 28.2333L60 0H39.8779H19.7559V3ZM23.7803 19.4667V29.0667H14.3901H5V46.5333V64H13.6973C18.4807 64 27.5657 63.9601 33.886 63.9113L45.3776 63.8228V36.8447V9.86667H34.5789H23.7803V19.4667ZM12.4295 17.4759C8.45396 21.5876 5.1811 25.0076 5.15655 25.0759C5.12932 25.1515 7.97224 25.2 12.4339 25.2H19.7559V17.6C19.7559 13.42 19.7338 10 19.7068 10C19.6799 10 16.405 13.3641 12.4295 17.4759Z" fill="#0E0909"/>
 									</svg>
-
 								</a>
 							</div>
 						</div>
 						<div class="form_translation_footer">
 							<ul class="form_footer_menu">
-								<a href="" class="icon_button"><img src="images/icons/volume.svg"></a>
+								<a href="" class="icon_button"><img src="{{ url_for('static', path='images/icons/volume.svg') }}"></a>
 							</ul>
 							<ul class="form_footer_menu">
-								<a href="" class="icon_button"><img src="images/icons/warning.svg"></a>
-								<a href="" class="icon_button"><img src="images/icons/rate.svg"></a>
+								<a href="" class="icon_button"><img src="{{ url_for('static', path='images/icons/warning.svg') }}"></a>
+								<a href="" class="icon_button"><img src="{{ url_for('static', path='images/icons/rate.svg') }}"></a>
 							</ul>
 						</div>
 					</div>
