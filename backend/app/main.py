@@ -1,5 +1,9 @@
 from fastapi import FastAPI, APIRouter, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from starlette.requests import Request
+import os
 
 from app.ml_models.translation_model import perform_translation
 from app.schemas.translation import TranslationRequest, TranslationResponse
@@ -19,7 +23,7 @@ from app.schemas.suggested_phrase import SuggestedPhraseCreate
 
 from app.auth import verify_token
 
-app = FastAPI(title="Mansi translator API", dependencies=[Depends(verify_token)])
+app = FastAPI(title="Mansi translator API")#, dependencies=[Depends(verify_token)])
 
 api_router = APIRouter()
 
@@ -30,6 +34,18 @@ app.add_middleware(
     allow_methods=["*"],  
     allow_headers=["*"],  
 )
+
+static_dir = os.path.join(os.path.dirname(__file__), "static")
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
+
+# Настраиваем Jinja2 для работы с шаблонами
+templates_dir = os.path.join(os.path.dirname(__file__), "templates")
+templates = Jinja2Templates(directory=templates_dir)
+
+@app.get("/")
+def read_root(request: Request):
+    # Рендерим шаблон index.html
+    return templates.TemplateResponse("index.html", {"request": request})
 
 
 @api_router.post("/translate", status_code=200, response_model=TranslationResponse)
