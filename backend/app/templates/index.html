@@ -15,7 +15,7 @@
             const sourceLang = document.getElementById("source_lang").textContent;
             const targetLang = document.getElementById("target_lang").textContent;
 
-            // Отправляем запрос на сервер через Fetch API
+            // Отправляем запрос на перевод
             const response = await fetch("/translate", {
                 method: "POST",
                 headers: {
@@ -28,18 +28,74 @@
                 })
             });
 
-            // Обработка ответа от сервера
             if (response.ok) {
                 const data = await response.json();
                 document.getElementById("translatedText").textContent = data.translated_text;
+
+                // Автоматически ищем переведенное слово и фразу в словаре
+				if (source_lang == 'РУССКИЙ'){
+					language = 'mansi'
+				} else {
+					language = 'russian'
+				}
+
+                searchInDictionary(inputText, language);
             } else {
                 console.error("Ошибка перевода");
             }
         }
 
+        // Функция для поиска слова и фразы в словаре
+        async function searchInDictionary(query, language) {
+            const sourceLang = document.getElementById("source_lang").value;
+
+            // Поиск слова
+            const wordResponse = await fetch(`/search/word?query=${query}&language=${language}`);
+            if (wordResponse.ok) {
+                const words = await wordResponse.json();
+				console.log("Слова с API:", words);
+                displayWords(words);
+            }
+
+            // Поиск фразы
+            const phraseResponse = await fetch(`/search/phrase?query=${query}&language=${language}&limit=5`);
+            if (phraseResponse.ok) {
+                const phrases = await phraseResponse.json();
+				console.log("Фразы с API:", phrases);
+                displayPhrases(phrases);
+            }
+        }
+
+		// Функция для отображения найденных слов
+		function displayWords(words) {
+			const wordContainer = document.getElementById("wordDictionary");
+			wordContainer.innerHTML = "";  // Очищаем контейнер перед добавлением новых слов
+
+			words.forEach(word => {
+				const wordElement = document.createElement("li");
+				wordElement.innerHTML = `<strong>${word.mansi_word}</strong>: ${word.russian_word}`; // Отображаем мансийское и русское слово
+				wordContainer.appendChild(wordElement);
+			});
+		}
+
+		// Функция для отображения найденных фраз
+		function displayPhrases(phrases) {
+			const phraseContainer = document.getElementById("phraseDictionary");
+			phraseContainer.innerHTML = "";  // Очищаем контейнер перед добавлением новых фраз
+
+			phrases.forEach(phrase => {
+				const phraseElement = document.createElement("li");
+				phraseElement.innerHTML = `<strong>${phrase.mansi_phrase}</strong>: ${phrase.russian_phrase}`; // Отображаем мансийскую и русскую фразу
+				phraseContainer.appendChild(phraseElement);
+			});
+		}
+
+
 		function clearText() {
             document.getElementById("inputText").value = "";
             document.getElementById("translatedText").textContent = "";
+			document.getElementById("wordDictionary").textContent = "";
+            document.getElementById("phraseDictionary").textContent = "";
         }
 
         // Функция для смены языков
@@ -57,6 +113,31 @@
                 translateText();
             }
         }
+
+		const handleCopyInputText = () => {
+			const inputText = document.getElementById("inputText").value
+			navigator.clipboard.writeText(inputText)
+		};
+
+		const handleCopyTranslatedText = () => {
+			const inputText = document.getElementById("translatedText").value
+			navigator.clipboard.writeText(inputText)
+		};
+
+		const speakText = () => {
+            const textToSpeak = document.getElementById('translatedText').value
+
+            if (!textToSpeak) {
+                alert("Нет текста для озвучивания!");
+                return;
+            }
+
+            const utterance = new SpeechSynthesisUtterance(textToSpeak);
+            utterance.lang = 'ru-RU'; // Установите нужный язык, например, 'ru-RU' для русского
+
+            // Озвучиваем текст
+            window.speechSynthesis.speak(utterance);
+        };
     </script>
 </head>
 <body>
@@ -122,7 +203,7 @@
 							<ul class="form_footer_menu">
 								<a href="" class="icon_button"><img src="{{ url_for('static', path='images/icons/volume.svg') }}"></a>
 								<a href="" class="icon_button"><img src="{{ url_for('static', path='images/icons/microphone.svg') }}"></a>
-								<a href="" class="icon_button"><img src="{{ url_for('static', path='images/icons/copy.svg') }}"></a>
+								<a href="" class="icon_button" onclick="handleCopyInputText()"><img src="{{ url_for('static', path='images/icons/copy.svg') }}"></a>
 							</ul>
 							<ul class="form_footer_menu">
 								<div class="number_of_characters">
@@ -148,7 +229,7 @@
 						<div class="form_translation_body">
 							<textarea id="translatedText" placeholder="Ваш перевод будет здесь..." class="translation_result2"></textarea>
 							<div>
-								<a class="icon_button">
+								<a class="icon_button" onclick="handleCopyTranslatedText()">
 									<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
 									<path fill-rule="evenodd" clip-rule="evenodd" d="M19.7559 3V6H34.5118H49.2678V31.2681V56.5364L54.6 56.5015L59.9323 56.4667L59.9661 28.2333L60 0H39.8779H19.7559V3ZM23.7803 19.4667V29.0667H14.3901H5V46.5333V64H13.6973C18.4807 64 27.5657 63.9601 33.886 63.9113L45.3776 63.8228V36.8447V9.86667H34.5789H23.7803V19.4667ZM12.4295 17.4759C8.45396 21.5876 5.1811 25.0076 5.15655 25.0759C5.12932 25.1515 7.97224 25.2 12.4339 25.2H19.7559V17.6C19.7559 13.42 19.7338 10 19.7068 10C19.6799 10 16.405 13.3641 12.4295 17.4759Z" fill="#0E0909"/>
 									</svg>
@@ -157,7 +238,7 @@
 						</div>
 						<div class="form_translation_footer">
 							<ul class="form_footer_menu">
-								<a href="" class="icon_button"><img src="{{ url_for('static', path='images/icons/volume.svg') }}"></a>
+								<a href="" class="icon_button" onclick="speakText()"><img src="{{ url_for('static', path='images/icons/volume.svg') }}"></a>
 							</ul>
 							<ul class="form_footer_menu">
 								<a href="" class="icon_button"><img src="{{ url_for('static', path='images/icons/warning.svg') }}"></a>
@@ -174,34 +255,16 @@
 			<div class="container">
 				<section class="examples_translation__wrap">
 					<h1>Примеры использования</h1>
-					<ul>
-						<li><p class="target_example">Люди</p> <p class="target_example">работающие</p> <p class="target_example">на</p> <p class="target_example">одном</p> <p class="target_example">пароходе</p> долго думали, что им делать с этой находкой.</li>
-						<li><p class="target_example">Акв</p> <p class="target_example">на̄иӈха̄пт</p> <p class="target_example">рӯпитан</p> <p class="target_example">ма̄хум</p>, кāркамысь акваг матыр ва̄руӈкве.</li>
-					</ul>
-					<ul>
-						<li><p class="target_example">Люди</p> <p class="target_example">работающие</p> <p class="target_example">на</p> <p class="target_example">одном</p> <p class="target_example">пароходе</p> долго думали, что им делать с этой находкой.</li>
-						<li><p class="target_example">Акв</p> <p class="target_example">на̄иӈха̄пт</p> <p class="target_example">рӯпитан</p> <p class="target_example">ма̄хум</p>, кāркамысь акваг матыр ва̄руӈкве.</li>
+					<ul id="phraseDictionary">
+						<!-- Фразы будут добавляться сюда динамически -->
 					</ul>
 				</section>
 				<section class="dict__wrap">
 					<h1>Словарь</h1>
-					<h2>Люди</h2>
-					<ul>
-						<li><p class="number_dict">1.</p> <a href="" class="dict_translation">Акв</a></li>
-						<li><p class="number_dict">2.</p> <a href="" class="dict_translation">Инге</a></li>
-						<li><p class="number_dict">3.</p> <a href="" class="dict_translation">На̄и</a></li>
+					<ul id="wordDictionary">
+						<!-- Слова будут добавляться сюда динамически -->
 					</ul>
 				</section>
-			</div>
-		</section>
-		<section class="history__wrap">
-			<div class="container">
-				<h1>История перевода</h1>
-				<ul class="history">
-					<a href=""><li><p class="history_source">недолговечный</p><p class="history_target">йистал</p></li></a>
-					<a href=""><li><p class="history_source">баранка</p><p class="history_target">кāлась</p></li></a>
-					<a href=""><li><p class="history_source">в царское время крестьяне работали на помещиков</p><p class="history_target">хо̄н порат крестья̄нин поме̄щикыт ма̄гыс рӯпитасыт</p></li></a>
-				</ul>
 			</div>
 		</section>
 	</section>
