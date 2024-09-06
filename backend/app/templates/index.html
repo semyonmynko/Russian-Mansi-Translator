@@ -32,13 +32,15 @@
                 const data = await response.json();
                 document.getElementById("translatedText").textContent = data.translated_text;
 
-                // Автоматически ищем переведенное слово и фразу в словаре
-				if (source_lang == 'РУССКИЙ'){
-					language = 'mansi'
-				} else {
+				console.log(sourceLang, targetLang);
+
+				if (sourceLang == 'РУССКИЙ'){
 					language = 'russian'
+				} else {
+					language = 'mansi'
 				}
 
+				console.log(language)
                 searchInDictionary(inputText, language);
             } else {
                 console.error("Ошибка перевода");
@@ -48,44 +50,53 @@
         // Функция для поиска слова и фразы в словаре
         async function searchInDictionary(query, language) {
             const sourceLang = document.getElementById("source_lang").value;
+			const targetLang = document.getElementById("target_lang").value;
 
             // Поиск слова
-            const wordResponse = await fetch(`/search/word?query=${query}&language=${language}`);
+            const wordResponse = await fetch(`/search/word?query=${query}&language=${language}&limit=10`);
             if (wordResponse.ok) {
                 const words = await wordResponse.json();
 				console.log("Слова с API:", words);
-                displayWords(words);
+                displayWords(words, language);
             }
 
             // Поиск фразы
-            const phraseResponse = await fetch(`/search/phrase?query=${query}&language=${language}&limit=5`);
+            const phraseResponse = await fetch(`/search/phrase?query=${query}&language=${language}&limit=10`);
             if (phraseResponse.ok) {
                 const phrases = await phraseResponse.json();
 				console.log("Фразы с API:", phrases);
-                displayPhrases(phrases);
+                displayPhrases(phrases, language);
             }
         }
 
 		// Функция для отображения найденных слов
-		function displayWords(words) {
+		function displayWords(words, language) {
 			const wordContainer = document.getElementById("wordDictionary");
 			wordContainer.innerHTML = "";  // Очищаем контейнер перед добавлением новых слов
 
 			words.forEach(word => {
 				const wordElement = document.createElement("li");
-				wordElement.innerHTML = `<strong>${word.mansi_word}</strong>: ${word.russian_word}`; // Отображаем мансийское и русское слово
+				if (language == 'russian'){
+					wordElement.innerHTML = `<strong>${word.russian_word}</strong>: ${word.mansi_word}`; 
+				} else {
+					wordElement.innerHTML = `<strong>${word.mansi_word}</strong>: ${word.russian_word}`; 
+				}
 				wordContainer.appendChild(wordElement);
 			});
 		}
 
 		// Функция для отображения найденных фраз
-		function displayPhrases(phrases) {
+		function displayPhrases(phrases, language) {
 			const phraseContainer = document.getElementById("phraseDictionary");
 			phraseContainer.innerHTML = "";  // Очищаем контейнер перед добавлением новых фраз
 
 			phrases.forEach(phrase => {
 				const phraseElement = document.createElement("li");
-				phraseElement.innerHTML = `<strong>${phrase.mansi_phrase}</strong>: ${phrase.russian_phrase}`; // Отображаем мансийскую и русскую фразу
+				if (language == 'russian') {
+					phraseElement.innerHTML = `<strong>${phrase.russian_phrase}</strong>: ${phrase.mansi_phrase}`; 
+				} else {
+					phraseElement.innerHTML = `<strong>${phrase.mansi_phrase}</strong>: ${phrase.russian_phrase}`; 
+				}
 				phraseContainer.appendChild(phraseElement);
 			});
 		}
@@ -259,7 +270,7 @@
 						<!-- Фразы будут добавляться сюда динамически -->
 					</ul>
 				</section>
-				<section class="dict__wrap">
+				<section class="examples_translation__wrap">
 					<h1>Словарь</h1>
 					<ul id="wordDictionary">
 						<!-- Слова будут добавляться сюда динамически -->
