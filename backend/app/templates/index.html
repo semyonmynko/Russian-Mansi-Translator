@@ -4,12 +4,16 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Переводчик мансийского языка</title>
+	<link rel="icon" href="{{ url_for('static', path='images/Favicon.png') }}" type="image/png">
+	<link rel="apple-touch-icon" href="{{ url_for('static', path='images/Favicon.png') }}" type="image/png">
 	<link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <script>
         // Функция для отправки текста на сервер и получения перевода
+		const apiToken = "{{ api_token }}";
+
         async function translateText() {
             const inputText = document.getElementById("inputText").value;
             const sourceLang = document.getElementById("source_lang").textContent;
@@ -20,6 +24,7 @@
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+					"Authorization": `Bearer ${apiToken}`
                 },
                 body: JSON.stringify({
                     text: inputText,
@@ -53,7 +58,14 @@
 			const targetLang = document.getElementById("target_lang").value;
 
             // Поиск слова
-            const wordResponse = await fetch(`/search/word?query=${query}&language=${language}&limit=10`);
+            const wordResponse = await fetch(`/search/word?query=${query}&language=${language}&limit=10`,{
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${apiToken}`, // Добавляем заголовок Authorization
+                "Content-Type": "application/json"
+				}
+            });
+
             if (wordResponse.ok) {
                 const words = await wordResponse.json();
 				console.log("Слова с API:", words);
@@ -61,7 +73,13 @@
             }
 
             // Поиск фразы
-            const phraseResponse = await fetch(`/search/phrase?query=${query}&language=${language}&limit=10`);
+            const phraseResponse = await fetch(`/search/phrase?query=${query}&language=${language}&limit=10`,{
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${apiToken}`, // Добавляем заголовок Authorization
+                "Content-Type": "application/json"
+				}
+			});
             if (phraseResponse.ok) {
                 const phrases = await phraseResponse.json();
 				console.log("Фразы с API:", phrases);
@@ -111,6 +129,7 @@
 
         // Функция для смены языков
         function switchLanguages() {
+			event.preventDefault()
             let sourceLang = document.getElementById("source_lang").textContent;
             let targetLang = document.getElementById("target_lang").textContent;
             document.getElementById("source_lang").textContent = targetLang;
@@ -126,17 +145,20 @@
         }
 
 		const handleCopyInputText = () => {
+			event.preventDefault()
 			const inputText = document.getElementById("inputText").value
 			navigator.clipboard.writeText(inputText)
 		};
 
 		const handleCopyTranslatedText = () => {
+			event.preventDefault()
 			const inputText = document.getElementById("translatedText").value
 			navigator.clipboard.writeText(inputText)
 		};
 
-		const speakText = () => {
-            const textToSpeak = document.getElementById('translatedText').value
+		const speakText = (text) => {
+			event.preventDefault()
+            const textToSpeak = document.getElementById(text).value
 
             if (!textToSpeak) {
                 alert("Нет текста для озвучивания!");
@@ -149,6 +171,67 @@
             // Озвучиваем текст
             window.speechSynthesis.speak(utterance);
         };
+		
+		function setupVoiceRecognition(inputFieldId, micIconId, language = 'ru-RU') {
+			let recognition;
+			let isListening = false;
+
+			// Проверка поддержки API в браузере
+			if ('webkitSpeechRecognition' in window) {
+				recognition = new webkitSpeechRecognition();
+				recognition.lang = language; // Установите язык распознавания
+				recognition.interimResults = false; // Вернуть только окончательные результаты
+				recognition.maxAlternatives = 1;
+
+				// Обработка результата распознавания
+				recognition.onresult = (event) => {
+					const result = event.results[0][0].transcript;
+					document.getElementById(inputFieldId).value = result; // Вставка текста в поле
+					console.log('Распознанный текст:', result);
+				};
+
+				recognition.onerror = (event) => {
+					console.error('Ошибка распознавания речи:', event.error);
+				};
+
+				recognition.onend = () => {
+					isListening = false;
+					console.log('Распознавание завершено');
+					document.getElementById(micIconId).style.backgroundColor = ''; // Сброс цвета кнопки микрофона
+
+					translateText();
+				};
+			} else {
+				console.log('Ваш браузер не поддерживает SpeechRecognition API');
+				return;
+			}
+
+			// Функция для начала и остановки распознавания речи
+			function toggleVoiceRecognition() {
+				if (isListening) {
+					recognition.stop();
+					isListening = false;
+					document.getElementById(micIconId).style.backgroundColor = ''; // Сброс цвета кнопки микрофона
+				} else {
+					recognition.start();
+					isListening = true;
+					document.getElementById(micIconId).style.backgroundColor = 'lightgreen'; // Активация микрофона
+				}
+			}
+
+			// Возвращаем функцию для переключения распознавания речи
+			return toggleVoiceRecognition;
+		}
+
+		// Инициализация голосового ввода при загрузке страницы
+		window.onload = function() {
+			const toggleVoiceRecognition = setupVoiceRecognition('inputText', 'micIcon');
+			document.getElementById('micIcon').addEventListener('click', function(event) {
+				event.preventDefault(); // Предотвращение перезагрузки страницы
+				toggleVoiceRecognition(); // Вызов функции голосового ввода
+			});
+		};
+
     </script>
 </head>
 <body>
@@ -200,9 +283,9 @@
 							<p id="source_lang">РУССКИЙ</p>
 						</div>
 						<div class="form_translation_body">
-							<textarea id="inputText" placeholder="Начните писать здесь..." onkeydown="handleEnterKey(event)"></textarea>
+							<textarea id="inputText" placeholder="Начните писать здесь..." oninput="updateCharacterCount()" onkeydown="handleEnterKey(event)"></textarea>
 							<div>
-								<a class="icon_button" onclick="clearText()">
+								<a id="clear_icon" class="icon_button" onclick="clearText()">
 									<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_6_560)">
 									<path fill-rule="evenodd" clip-rule="evenodd" d="M59.1722 64L0 4.82782L4.82781 1.50135e-06L64 59.1722L59.1722 64Z" fill="#0E0909"/>
 									<path fill-rule="evenodd" clip-rule="evenodd" d="M64 4.82781L4.82782 64L1.18773e-06 59.1722L59.1722 0L64 4.82781Z" fill="#0E0909"/></g><defs><clipPath id="clip0_6_560"><rect width="64" height="64" fill="white"/></clipPath></defs>
@@ -212,13 +295,13 @@
 						</div>
 						<div class="form_translation_footer">
 							<ul class="form_footer_menu">
-								<a href="" class="icon_button"><img src="{{ url_for('static', path='images/icons/volume.svg') }}"></a>
-								<a href="" class="icon_button"><img src="{{ url_for('static', path='images/icons/microphone.svg') }}"></a>
+								<a href="" class="icon_button" onclick="speakText('inputText')"><img src="{{ url_for('static', path='images/icons/volume.svg') }}"></a>
+								<a id="micIcon" href="" class="icon_button"><img src="{{ url_for('static', path='images/icons/microphone.svg') }}"></a>
 								<a href="" class="icon_button" onclick="handleCopyInputText()"><img src="{{ url_for('static', path='images/icons/copy.svg') }}"></a>
 							</ul>
 							<ul class="form_footer_menu">
 								<div class="number_of_characters">
-									<p>0</p><p>/5000</p>
+									<p id="charCount">0 / 5000</p>
 								</div>
 								<a href="" class="icon_button"><img src="{{ url_for('static', path='images/icons/keyboard.svg') }}"></a>
 							</ul>
@@ -249,7 +332,7 @@
 						</div>
 						<div class="form_translation_footer">
 							<ul class="form_footer_menu">
-								<a href="" class="icon_button" onclick="speakText()"><img src="{{ url_for('static', path='images/icons/volume.svg') }}"></a>
+								<a href="" class="icon_button" onclick="speakText('translatedText')"><img src="{{ url_for('static', path='images/icons/volume.svg') }}"></a>
 							</ul>
 							<ul class="form_footer_menu">
 								<a href="" class="icon_button"><img src="{{ url_for('static', path='images/icons/warning.svg') }}"></a>

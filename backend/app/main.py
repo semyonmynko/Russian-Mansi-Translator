@@ -22,6 +22,7 @@ from app.crud.suggested_phrase import suggested_phrase
 from app.schemas.suggested_phrase import SuggestedPhraseCreate
 
 from app.auth import verify_token
+from app.settings import settings
 
 app = FastAPI(title="Mansi translator API")#, dependencies=[Depends(verify_token)])
 
@@ -44,11 +45,10 @@ templates = Jinja2Templates(directory=templates_dir)
 
 @app.get("/")
 def read_root(request: Request):
-    # Рендерим шаблон index.html
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse("index.html", {"request": request, "api_token": settings.api_token})
 
 
-@api_router.post("/translate", status_code=200, response_model=TranslationResponse)
+@api_router.post("/translate", status_code=200, response_model=TranslationResponse, dependencies=[Depends(verify_token)])
 async def translate_text(request: TranslationRequest):
     """
     Эндпоинт перевода.
@@ -60,7 +60,7 @@ async def translate_text(request: TranslationRequest):
 
 
 #===WORD===
-@api_router.post("/add/word", status_code=201, response_model=Word)
+@api_router.post("/add/word", status_code=201, response_model=Word, dependencies=[Depends(verify_token)])
 async def add_word(
     *,
     db: Session = Depends(get_db),
@@ -77,7 +77,7 @@ async def add_word(
         raise HTTPException(status_code=500, detail="An unexpected error occurred") from e
 
 
-@api_router.get("/search/word", status_code=200, response_model=list[Word])
+@api_router.get("/search/word", status_code=200, response_model=list[Word], dependencies=[Depends(verify_token)])
 async def search_words(
     query: str, 
     language: str = Query(..., regex="^(mansi|russian)$"), 
@@ -97,7 +97,7 @@ async def search_words(
 
 
 #===PHRASE===
-@api_router.post("/add/phrase", status_code=201, response_model=Phrase)
+@api_router.post("/add/phrase", status_code=201, response_model=Phrase, dependencies=[Depends(verify_token)])
 async def add_phrase(
     *,
     db: Session = Depends(get_db),
@@ -114,7 +114,7 @@ async def add_phrase(
         raise HTTPException(status_code=500, detail="An unexpected error occurred") from e
 
 
-@api_router.get("/search/phrase", status_code=200, response_model=list[Phrase])
+@api_router.get("/search/phrase", status_code=200, response_model=list[Phrase], dependencies=[Depends(verify_token)])
 async def search_phrases(
     query: str, 
     language: str = Query(..., regex="^(mansi|russian)$"), 
@@ -131,11 +131,6 @@ async def search_phrases(
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     return results
-
-
-@api_router.get("/")
-async def root():
-    return {"message": "Welcome to the translation API"}
 
 
 app.include_router(api_router)
