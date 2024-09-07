@@ -436,6 +436,13 @@ h2{
 	bottom: 0;
 	background-color: var(--color-red);
 	width: 100%;
+    visibility: hidden;  /* Невидимая */
+	opacity: 0;
+}
+
+.keyboard__wrap.visible {
+    visibility: visible;
+    opacity: 1;
 }
 
 .keyboard{

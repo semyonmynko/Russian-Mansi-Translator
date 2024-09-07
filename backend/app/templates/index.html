@@ -19,6 +19,9 @@
             const sourceLang = document.getElementById("source_lang").textContent;
             const targetLang = document.getElementById("target_lang").textContent;
 
+			const keyboardSection = document.getElementById("keyboardSection");
+			keyboardSection.classList.remove("visible");
+
             // Отправляем запрос на перевод
             const response = await fetch("/translate", {
                 method: "POST",
@@ -73,7 +76,7 @@
             }
 
             // Поиск фразы
-            const phraseResponse = await fetch(`/search/phrase?query=${query}&language=${language}&limit=10`,{
+            const phraseResponse = await fetch(`/search/phrase?query=${query}&language=${language}&limit=5`,{
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${apiToken}`, // Добавляем заголовок Authorization
@@ -134,6 +137,17 @@
             let targetLang = document.getElementById("target_lang").textContent;
             document.getElementById("source_lang").textContent = targetLang;
             document.getElementById("target_lang").textContent = sourceLang;
+
+			const keyboardElement = document.querySelector('.keyboard');
+			if (keyboardElement){
+				if (keyboardElement.id.includes('russian')){
+					const source_keyboard = keyboardElement.id.replace('russian', 'mansi');
+					loadKeyboardFromFile('/keyboard/' + source_keyboard.replace('keyboard-', ''))
+				} else {
+					const source_keyboard = keyboardElement.id.replace('mansi', 'russian');
+					loadKeyboardFromFile('/keyboard/' + source_keyboard.replace('keyboard-', ''))
+				}
+			}
         }
 
         // Обработка нажатия Enter для отправки текста
@@ -239,12 +253,144 @@
 			});
 		};
 
+		let isCapsActive = false;
+		let isShiftActive = false;
+		let currentLanguage = 'russian'; // Язык по умолчанию — русский
+
+		// Функция для загрузки клавиатуры в зависимости от состояния Caps Lock и Shift
+		function loadKeyboard() {
+			const inputText = document.getElementById("source_lang").textContent
+			const filePrefix = inputText === 'РУССКИЙ' ? 'russian' : 'mansi';
+			let fileName;
+
+			if (isShiftActive) {
+				fileName = `/keyboard/${filePrefix}-shift`;
+			} else if (isCapsActive) {
+				fileName = `/keyboard/${filePrefix}-upper`;
+			} else {
+				fileName = `/keyboard/${filePrefix}-lower`;
+			}
+
+			loadKeyboardFromFile(fileName);
+		}
+
+		// AJAX-запрос для загрузки клавиатуры из файла
+		function loadKeyboardFromFile(file) {
+			const xhr = new XMLHttpRequest();
+			xhr.open('GET', file, true);
+			//xhr.setRequestHeader('Authorization', `Bearer ${apiToken}`);
+			xhr.onreadystatechange = function () {
+				if (xhr.readyState === 4 && xhr.status === 200) {
+					document.getElementById('keyboardSection').innerHTML = xhr.responseText;
+				}
+			};
+			xhr.send();
+		}
+
+		// Функция для определения языка на основе содержимого inputText
+		function switchLanguage() {
+			const inputText = document.getElementById("inputText").value;
+			currentLanguage = /[а-яА-ЯёЁ]/.test(inputText) ? 'russian' : 'mansi';
+		}
+
+		// Показ/скрытие клавиатуры и определение языка
+		function toggleKeyboard() {
+			const keyboardSection = document.getElementById("keyboardSection");
+
+			if (!keyboardSection.classList.contains("visible")) {
+				// Определить язык перед отображением клавиатуры
+				switchLanguage();
+
+				// Загружаем клавиатуру при открытии
+				loadKeyboard();
+				keyboardSection.classList.add("visible");
+			} else {
+				keyboardSection.classList.remove("visible");
+			}
+		}
+
+		document.addEventListener('click', function(event) {
+			if (event.target.classList.contains('keyboard_button')) {
+				event.preventDefault();
+
+				// Получаем текст кнопки
+				const char = event.target.textContent.trim();
+
+				// Проверяем, является ли это специальной клавишей
+				if (char === '←') {
+					handleBackspace();
+				} else if (char === '↲') {
+					handleEnter();
+				} else if (char === '⇑') {
+					toggleShift();
+				} else if (char === '⇆') {
+					handleTab();
+				} else if (char === 'Caps' || char === '⟰') { // Обрабатываем как Caps Lock
+					toggleCapsLock();
+				} else if (char === 'РУССКИЙ' || char === 'МАНСИЙСКИЙ') { 
+					handleSpace();
+				} else if (char === 'rus' || char === 'mansi') { 
+					
+				} else {
+					addToInput(char); // Добавляем символ в поле ввода
+				}
+			}
+		});
+
+		function addToInput(char) {
+			const input = document.getElementById("inputText");
+
+			input.value += char;
+		}
+
+		// Переключение Caps Lock
+		function toggleCapsLock() {
+			isCapsActive = !isCapsActive;
+			loadKeyboard();
+		}
+
+		// Переключение Shift
+		function toggleShift() {
+			isShiftActive = !isShiftActive;
+			loadKeyboard();
+		}
+
+		function handleBackspace() {
+			const input = document.getElementById("inputText");
+			input.value = input.value.slice(0, -1); // Удаляем последний символ
+		}
+
+		function handleEnter() {
+			translateText()
+		}
+
+		function handleTab() {
+			const input = document.getElementById("inputText");
+			input.value += '\t'; // Добавляем символ табуляции
+		}
+
+		function handleSpace() {
+			const input = document.getElementById("inputText");
+			input.value += ' '; // Добавляем пробел
+		}
+
+		// Добавляем обработчик клика для иконки клавиатуры
+		document.getElementById('keyboardIcon').addEventListener('click', (event) => {
+			event.preventDefault(); // Предотвращаем переход по ссылке
+			toggleKeyboard(); // Показываем клавиатуру и определяем язык
+		});
+
+		// Обработка клика на клавиатуру
+		document.getElementById('keyboardSection').addEventListener('click', (event) => {
+			event.stopPropagation(); // Остановка всплытия события
+		});
+		
     </script>
 </head>
 <body>
 	<section class="header__wrap">
 		<header class="header">
-			<a href="" class="logotype">
+			<a class="logotype">
 				<div class="logotype_img">
 					<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_37_408)">
 						<path fill-rule="evenodd" clip-rule="evenodd" d="M16.7719 35.313C15.0679 35.313 13.6753 35.3404 13.6753 35.3743C13.6753 35.7576 13.9515 37.3768 14.0753 37.7015C14.3449 38.4225 15.0549 39.2321 15.7206 39.5776L15.929 39.6871L17.7489 37.6715C18.752 36.5646 19.6366 35.5803 19.7186 35.4851L19.8685 35.3143H16.7719V35.313Z" fill="white"/>
@@ -302,15 +448,15 @@
 						</div>
 						<div class="form_translation_footer">
 							<ul class="form_footer_menu">
-								<a href="" class="icon_button" onclick="speakText('inputText')"><img src="{{ url_for('static', path='images/icons/volume.svg') }}"></a>
-								<a id="micIcon" href="" class="icon_button"><img src="{{ url_for('static', path='images/icons/microphone.svg') }}"></a>
-								<a href="" class="icon_button" onclick="handleCopyInputText()"><img src="{{ url_for('static', path='images/icons/copy.svg') }}"></a>
+								<a class="icon_button" onclick="speakText('inputText')"><img src="{{ url_for('static', path='images/icons/volume.svg') }}"></a>
+								<a id="micIcon" class="icon_button"><img src="{{ url_for('static', path='images/icons/microphone.svg') }}"></a>
+								<a class="icon_button" onclick="handleCopyInputText()"><img src="{{ url_for('static', path='images/icons/copy.svg') }}"></a>
 							</ul>
 							<ul class="form_footer_menu">
 								<div class="number_of_characters">
 									<p id="charCount">0 / 5000</p>
 								</div>
-								<a href="" class="icon_button"><img src="{{ url_for('static', path='images/icons/keyboard.svg') }}"></a>
+								<a id="keyboard_icon" class="icon_button" onclick="toggleKeyboard()"><img src="{{ url_for('static', path='images/icons/keyboard.svg') }}"></a>
 							</ul>
 						</div>
 					</div>
@@ -339,11 +485,11 @@
 						</div>
 						<div class="form_translation_footer">
 							<ul class="form_footer_menu">
-								<a href="" class="icon_button" onclick="speakText('translatedText')"><img src="{{ url_for('static', path='images/icons/volume.svg') }}"></a>
+								<a class="icon_button" onclick="speakText('translatedText')"><img src="{{ url_for('static', path='images/icons/volume.svg') }}"></a>
 							</ul>
 							<ul class="form_footer_menu">
-								<a href="" class="icon_button"><img src="{{ url_for('static', path='images/icons/warning.svg') }}"></a>
-								<a href="" class="icon_button"><img src="{{ url_for('static', path='images/icons/rate.svg') }}"></a>
+								<a class="icon_button"><img src="{{ url_for('static', path='images/icons/warning.svg') }}"></a>
+								<a class="icon_button"><img src="{{ url_for('static', path='images/icons/rate.svg') }}"></a>
 							</ul>
 						</div>
 					</div>
@@ -368,6 +514,8 @@
 				</section>
 			</div>
 		</section>
+	</section>
+	<section class="keyboard__wrap" id="keyboardSection">
 	</section>
 </body>
 </html>

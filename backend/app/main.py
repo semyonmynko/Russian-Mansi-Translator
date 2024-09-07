@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.requests import Request
+from fastapi.responses import HTMLResponse
 import os
 
 from app.ml_models.translation_model import perform_translation
@@ -24,7 +25,7 @@ from app.schemas.suggested_phrase import SuggestedPhraseCreate
 from app.auth import verify_token
 from app.settings import settings
 
-app = FastAPI(title="Mansi translator API")#, dependencies=[Depends(verify_token)])
+app = FastAPI(title="Mansi translator API", static_folder='templates')#, dependencies=[Depends(verify_token)])
 
 api_router = APIRouter()
 
@@ -58,6 +59,12 @@ async def translate_text(request: TranslationRequest):
 
     return TranslationResponse(translated_text=translated_text)
 
+@app.get("/keyboard/{keyboard_type}", response_class=HTMLResponse)#, dependencies=[Depends(verify_token)])
+async def load_keyboard(request: Request, keyboard_type: str):
+    try:
+        return templates.TemplateResponse(f"keyboard/keyboard-{keyboard_type}.html", {"request": request})
+    except:
+        return HTMLResponse(content="Keyboard not found", status_code=404)
 
 #===WORD===
 @api_router.post("/add/word", status_code=201, response_model=Word, dependencies=[Depends(verify_token)])
