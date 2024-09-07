@@ -192,6 +192,7 @@
 
 				recognition.onerror = (event) => {
 					console.error('Ошибка распознавания речи:', event.error);
+					return;
 				};
 
 				recognition.onend = () => {
