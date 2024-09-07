@@ -192,7 +192,7 @@
 
 				recognition.onerror = (event) => {
 					console.error('Ошибка распознавания речи:', event.error);
-					return;
+					recognitionError = true;
 				};
 
 				recognition.onend = () => {
@@ -200,7 +200,12 @@
 					console.log('Распознавание завершено');
 					document.getElementById(micIconId).style.backgroundColor = ''; // Сброс цвета кнопки микрофона
 
-					translateText();
+					            // Проверяем флаг ошибки перед переводом
+					if (!recognitionError) {
+               			translateText();
+            		} else {
+                		console.log('Перевод отменен из-за ошибки распознавания');
+            		}
 				};
 			} else {
 				console.log('Ваш браузер не поддерживает SpeechRecognition API');
@@ -217,6 +222,7 @@
 					recognition.start();
 					isListening = true;
 					document.getElementById(micIconId).style.backgroundColor = 'lightgreen'; // Активация микрофона
+					recognitionError = false;
 				}
 			}
 
