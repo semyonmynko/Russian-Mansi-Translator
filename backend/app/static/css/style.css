@@ -428,3 +428,66 @@ h2{
 	fill: #EED2D2;
 	transition-duration: 0.3s;
 }
+
+.keyboard__wrap{
+	position: fixed;
+	display: flex;
+	justify-content: center;
+	bottom: 0;
+	background-color: var(--color-red);
+	width: 100%;
+}
+
+.keyboard{
+    padding: 24px 0;
+    width: 704px;
+}
+
+.keyboard li{
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 6px;
+}
+
+.keyboard li:last-child{
+	margin-bottom: 0px;
+}
+
+.keyboard_button{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 42px;
+	min-height: 42px;
+	text-align: center;
+	vertical-align: middle;
+	color: var(--color-black);
+	background-color: var(--color-white);
+	border-radius: 2px;
+	margin-right: 6px;
+	transition-duration: 0.2s;
+}
+
+.keyboard_button:last-child{
+	margin-right: 0px;
+}
+
+.keyboard_button:hover{
+	background-color: #FFDDDD;
+}
+
+.fill{
+	width: 100%;
+}
+
+.space{
+	color: #C2C1C1;
+}
+
+.active{
+	background-color: #FFDDDD;
+}
+
+.mans{
+	background-image: url("../images/bg_mans.svg");
+}
