@@ -45,8 +45,17 @@ templates_dir = os.path.join(os.path.dirname(__file__), "templates")
 templates = Jinja2Templates(directory=templates_dir)
 
 @app.get("/")
-def read_root(request: Request):
+def read_root(request: Request = None):
     return templates.TemplateResponse("index.html", {"request": request, "api_token": settings.api_token})
+    
+@app.get("/add_translation")
+def get_translation_page(type: str = Query(..., description="Type of translation page: 'word' or 'phrase'"), request: Request = None):
+    if type == "word":
+        return templates.TemplateResponse(f"add_translation/add_translation_word.html", {"request": request, "api_token": settings.api_token})
+    elif type == "phrase":
+        return templates.TemplateResponse(f"add_translation/add_translation_phrase.html", {"request": request, "api_token": settings.api_token})
+    else:
+        return {"error": "Invalid type. Use 'word' or 'phrase'."}
 
 
 @api_router.post("/translate", status_code=200, response_model=TranslationResponse, dependencies=[Depends(verify_token)])

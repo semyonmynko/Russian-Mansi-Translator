@@ -3,16 +3,79 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="{{ url_for('static', path='images/Favicon.png') }}" type="image/png">
     <title>Переводчик мансийского языка</title>
-	<link rel="stylesheet" href="../css/style.css">
+	<link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
+<script>
+	const apiToken = "{{ api_token }}";
+
+	async function addWord() {
+		event.preventDefault(); // Предотвращаем стандартное поведение формы
+
+
+		const mansiWord = document.getElementById("mansi_word").value;
+		const russianWord = document.getElementById("russian_word").value;
+		const partOfSpeech = document.getElementById("part_of_speech").value;
+		const comment = document.getElementById("comment").value;
+
+		let valid = true;
+
+		const data = {
+			mansi_word: mansiWord,
+			russian_word: russianWord,
+			part_of_speech: partOfSpeech,
+			comment: comment,
+		};
+
+		console.log(data)
+
+		if (mansiWord == '') {
+			alert('Пожалуйста, введите перевод на мансийском языке');
+			return
+        }
+        if (russianWord == '') {
+			alert('Пожалуйста, введите перевод на русском языке');
+			return
+        }
+        if (partOfSpeech == '') {
+			alert('Пожалуйста, выберите часть речи');
+			return
+        }
+
+		console.log(valid)
+
+		if (valid) {
+			try {
+				const response = await fetch('/add/word', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': `Bearer ${apiToken}` // если требуется токен
+					},
+					body: JSON.stringify(data)
+				});
+
+				if (response.ok) {
+					alert('Перевод успешно добавлен!');
+				} else {
+					alert('Ошибка при добавлении перевода!');
+				}
+			} catch (error) {
+				console.error('Ошибка:', error);
+				alert('Произошла ошибка при отправке запроса');
+			}
+		}
+	};
+	
+</script>
 <body>
 	<section class="header__wrap">
 		<header class="header">
-			<a href="" class="logotype">
+			<a class="logotype" href="/">
 				<div class="logotype_img">
 					<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_37_408)">
 						<path fill-rule="evenodd" clip-rule="evenodd" d="M16.7719 35.313C15.0679 35.313 13.6753 35.3404 13.6753 35.3743C13.6753 35.7576 13.9515 37.3768 14.0753 37.7015C14.3449 38.4225 15.0549 39.2321 15.7206 39.5776L15.929 39.6871L17.7489 37.6715C18.752 36.5646 19.6366 35.5803 19.7186 35.4851L19.8685 35.3143H16.7719V35.313Z" fill="white"/>
@@ -39,11 +102,11 @@
 		</header>
 		<div class="tittle_background_mini__warp">
 			<div class="big_patterns_bg">
-				<img src="../images/big_pattern_bg_mini.svg">
-				<img src="../images/big_pattern_bg_mini.svg">
+				<img src="{{ url_for('static', path='images/big_pattern_bg_mini.svg') }}">
+				<img src="{{ url_for('static', path='images/big_pattern_bg_mini.svg') }}">
 			</div>
 			<div class="pattern_line_bg">
-				<img src="../images/pattern_line_bg.svg">
+				<img src="{{ url_for('static', path='images/pattern_line_bg.svg') }}">
 			</div>
 		</div>
 		<div class="tittle__wrap">
@@ -59,21 +122,21 @@
 					<li>
 						<label>Выберите тип перевода:</label>
 						<div class="levers">
-							<button class="button_lever active_lever">Слово</button>
-							<button class="button_lever">Фраза</button>
+							<a class="button_lever active_lever">Слово</a>
+							<a href="/add_translation?type=phrase" class="button_lever">Фраза</a>
 						</div>
 					</li>
 					<li>
 						<label>Перевод на мансийском:</label>
-						<input type="text" placeholder="Введите значение...">
+						<input type="text" id="mansi_word" placeholder="Введите значение...">
 					</li>
 					<li>
 						<label>Перевод на русском:</label>
-						<input type="text" placeholder="Введите значение...">
+						<input type="text" id="russian_word" placeholder="Введите значение...">
 					</li>
 					<li>
 						<label>Часть речи:</label>
-						<select class="selector">
+						<select class="selector" id="part_of_speech">
 							<option>Существительное</option>
 							<option>Прилагательное</option>
 							<option>Глагол</option>
@@ -84,7 +147,7 @@
 					</li>
 					<li>
 						<label>Комментарий к переводу:</label>
-						<input type="text" placeholder="Введите значение...">
+						<input type="text" id="comment" placeholder="Введите значение...">
 					</li>
 					<li>
 						<button href="" class="button_red">Отправить</button>
