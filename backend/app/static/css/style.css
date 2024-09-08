@@ -81,6 +81,13 @@ li{
 	background-color: var(--color-red);
 }
 
+.tittle_background_mini__warp{
+	position: relative;
+	width: 100%;
+	height: 245px;
+	background-color: var(--color-red);
+}
+
 .big_patterns_bg{
 	position: absolute;
 	bottom: 0px;
@@ -202,7 +209,7 @@ li{
 }
 
 .icon_button:hover{
-	background-color: #F6E7E7;
+	background-color: rgba(203, 78, 80, 0.1);
 }
 
 .form_translation_footer{
@@ -436,13 +443,6 @@ h2{
 	bottom: 0;
 	background-color: var(--color-red);
 	width: 100%;
-    visibility: hidden;  /* Невидимая */
-	opacity: 0;
-}
-
-.keyboard__wrap.visible {
-    visibility: visible;
-    opacity: 1;
 }
 
 .keyboard{
@@ -497,4 +497,257 @@ h2{
 
 .mans{
 	background-image: url("../images/bg_mans.svg");
+}
+
+.pop_up__wrap{
+	background-color: rgba(0, 0, 0, 0.75);
+	display: block;
+	width: 100%;
+	height: 100%;
+	position: fixed;
+}
+
+.cross svg path{
+	fill: var(--color-white);
+}
+
+.cross svg{
+	width: 64px;
+	height: 64px;
+}
+
+.cross{
+	width: 124px;
+	height: 124px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.cross__wrap{
+	top: 24px;
+	right: 24px;
+	display: flex;
+	justify-content: right;
+	position: absolute;
+}
+
+.window_pop_up__wrap{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100%;
+}
+
+.pop_up_content{
+	display: flex;
+	flex-direction: column;
+	background-color: var(--color-white);
+	padding: 24px 32px;
+	border-radius: 2px;
+	align-items: center;
+}
+
+.pop_up_content h1{
+	margin-bottom: 16px;
+	text-align: center;
+	color: var(--color-red);
+}
+
+.pop_up_content p{
+	margin-bottom: 16px;
+	width: 390px;
+	text-align: center;
+}
+
+.pop_up_content textarea{
+	margin-bottom: 16px;
+	height: auto;
+	font-family: "Montserrat", sans-serif;
+	font-optical-sizing: auto;
+	font-size: 18px;
+	font-weight: normal;
+	border: 1px solid rgba(0, 0, 0, 0.5);
+	border-radius: 2px;
+	padding: 12px 20px;
+	outline: none;
+	resize: vertical;
+	width: 440px;
+	height: 176px;
+}
+
+.pop_up_content .button_red{
+	width: 480px;
+}
+
+.button_red{
+	background-color: var(--color-red);
+	padding: 12px 20px;
+	border-radius: 2px;
+	border: 0px;
+	font-family: "Montserrat", sans-serif;
+	font-optical-sizing: auto;
+	font-size: 20px;
+	font-weight: regular;
+	color: var(--color-white);
+	transition-duration: 0.2s;
+	cursor: pointer;
+}
+
+.button_red:hover{
+	background-color: #E8686A;
+}
+
+.pop_up_content ul li svg{
+	width: 48px;
+	height: 48px;
+}
+
+.pop_up_content ul li path{
+	fill: #FCEEC8;
+}
+
+.pop_up_content ul li path:hover{
+	fill: #F5BD23;
+}
+
+.pop_up_content ul{
+	display: flex;
+	flex-direction: row;
+	margin-bottom: 16px;
+}
+
+.pop_up_content ul li{
+	margin-right: 16px;
+}
+
+.pop_up_content ul li:last-child{
+	margin-right: 0;
+}
+
+.tittle__wrap{
+	position: absolute;
+	width: 100%;
+	top: 115px;
+}
+
+.tittle__wrap h1{
+	color: var(--color-white);
+	font-size: 48px;
+	margin-bottom: 0;
+	display: flex;
+	justify-content: center;
+}
+
+.form__wrap .container{
+	width: 392px;
+	margin-bottom: 60px;
+}
+
+.form_add_translation ul li{
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 12px;
+	align-items: center;
+}
+
+
+.form_add_translation ul li label{
+	margin-bottom: 6px;
+	font-size: 14px;
+}
+
+.form_add_translation ul li:last-child{
+	margin-bottom: 0;
+}
+
+.form_add_translation h2{
+	font-size: 28px;
+	color: var(--color-red);
+	text-align: center;
+	margin-bottom: 12px;
+}
+
+.form_add_translation p{
+	text-align: center;
+	margin-bottom: 24px;
+}
+
+.form_add_translation ul li input{
+	height: auto;
+	font-family: "Montserrat", sans-serif;
+	font-optical-sizing: auto;
+	font-size: 20px;
+	font-weight: normal;
+	border: 1px solid rgba(0, 0, 0, 0.5);
+	border-radius: 2px;
+	padding: 12px 20px;
+	outline: none;
+	width: 352px;
+}
+
+.form_add_translation ul li input:focus{
+	border: 1px solid rgba(203, 78, 100, 1.0);
+}
+
+.form_add_translation ul li select{
+	height: auto;
+	font-family: "Montserrat", sans-serif;
+	font-optical-sizing: auto;
+	font-size: 20px;
+	font-weight: normal;
+	border: 1px solid rgba(0, 0, 0, 0.5);
+	border-radius: 2px;
+	padding: 12px 20px;
+	outline: none;
+	width: 392px;
+}
+
+.form_add_translation ul li select:focus{
+	border: 1px solid rgba(203, 78, 100, 1.0);
+}
+
+.form_add_translation button{
+	width: 100%;
+}
+
+.levers{
+	display: flex;
+	flex-direction: row;
+}
+
+.button_lever{
+	margin-right: 12px;
+	background-color: var(--color-white);
+	padding: 12px 20px;
+	border-radius: 2px;
+	border: 0px;
+	font-family: "Montserrat", sans-serif;
+	font-optical-sizing: auto;
+	font-size: 20px;
+	font-weight: regular;
+	color: var(--color-black);
+	transition-duration: 0.2s;
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	min-width: 190px;
+}
+
+.button_lever:hover{
+	background-color: #FFDDDD;
+}
+
+.active_lever{
+	background-color: var(--color-red);
+	color: var(--color-white);
+}
+
+.active_lever:hover{
+	background-color: #E8686A;
+}
+
+
+.button_lever:last-child{
+	margin-right: 0px;
 }
