@@ -153,7 +153,7 @@ document.addEventListener('click', function(event) {
             toggleCapsLock();
         } else if (char === 'РУССКИЙ' || char === 'МАНСИЙСКИЙ') { 
             handleSpace();
-        } else if (char === 'rus' || char === 'mansi') { 
+        } else if (char === 'rus' || char === 'man') { 
             
         } else {
             addToInput(char); // Добавляем символ в поле ввода
