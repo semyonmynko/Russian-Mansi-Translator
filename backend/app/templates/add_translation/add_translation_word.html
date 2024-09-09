@@ -10,68 +10,6 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
-<script>
-	const apiToken = "{{ api_token }}";
-
-	async function addWord() {
-		event.preventDefault(); // Предотвращаем стандартное поведение формы
-
-
-		const mansiWord = document.getElementById("mansi_word").value;
-		const russianWord = document.getElementById("russian_word").value;
-		const partOfSpeech = document.getElementById("part_of_speech").value;
-		const comment = document.getElementById("comment").value;
-
-		let valid = true;
-
-		const data = {
-			mansi_word: mansiWord,
-			russian_word: russianWord,
-			part_of_speech: partOfSpeech,
-			comment: comment,
-		};
-
-		console.log(data)
-
-		if (mansiWord == '') {
-			alert('Пожалуйста, введите перевод на мансийском языке');
-			return
-        }
-        if (russianWord == '') {
-			alert('Пожалуйста, введите перевод на русском языке');
-			return
-        }
-        if (partOfSpeech == '') {
-			alert('Пожалуйста, выберите часть речи');
-			return
-        }
-
-		console.log(valid)
-
-		if (valid) {
-			try {
-				const response = await fetch('/add/word', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-						'Authorization': `Bearer ${apiToken}` // если требуется токен
-					},
-					body: JSON.stringify(data)
-				});
-
-				if (response.ok) {
-					alert('Перевод успешно добавлен!');
-				} else {
-					alert('Ошибка при добавлении перевода!');
-				}
-			} catch (error) {
-				console.error('Ошибка:', error);
-				alert('Произошла ошибка при отправке запроса');
-			}
-		}
-	};
-	
-</script>
 <body>
 	<section class="header__wrap">
 		<header class="header">
@@ -116,8 +54,6 @@
 	<section class="form__wrap">
 		<div class="container">
 			<form class="form_add_translation">
-				<h2>Добавление перевода</h2>
-				<p>Вы можете помочь нашему сервису, если знаете перевод слова (фразы), которого нет на нашем сайте. Заполните форму, чтобы добавить новое слово</p>
 				<ul>
 					<li>
 						<label>Выберите тип перевода:</label>
@@ -152,9 +88,16 @@
 					<li>
 						<button onclick="addWord()" class="button_red">Отправить</button>
 					</li>
+					<li>
+						<a id="keyboard_icon" class="icon_button" onclick="toggleKeyboard()"><img src="{{ url_for('static', path='images/icons/keyboard.svg') }}"></a>
+					</li>
 				</ul>
 			</form>
 		</div>
 	</section>
+	<section class="keyboard__wrap" id="keyboardSection">
+	</section>
+	<script src="{{ url_for('static', path='js/keyboard_add_word.js') }}"></script>
+	<script>const apiToken = "{{ api_token }}";</script>
 </body>
 </html>

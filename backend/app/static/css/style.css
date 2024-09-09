@@ -443,7 +443,14 @@ h2{
 	bottom: 0;
 	background-color: var(--color-red);
 	width: 100%;
-}
+    visibility: hidden;  /* Невидимая */
+ 	opacity: 0;
+ }
+
+ .keyboard__wrap.visible {
+     visibility: visible;
+     opacity: 1;
+ }
 
 .keyboard{
     padding: 24px 0;
@@ -641,7 +648,7 @@ h2{
 
 .form__wrap .container{
 	width: 392px;
-	margin-bottom: 60px;
+	margin-bottom: 360px;
 }
 
 .form_add_translation ul li{
