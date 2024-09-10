@@ -47,15 +47,15 @@ templates_dir = os.path.join(os.path.dirname(__file__), "templates")
 templates = Jinja2Templates(directory=templates_dir)
 
 
-@app.on_event("startup")
-def get_translation(text: str) -> str:
-    global onnx_translation
-    to_onnx = '/home/gh58093lm/model_v1/'
-    tokenizer = AutoTokenizer.from_pretrained(os.path.join(to_onnx, "tokenizer"))
-    model = ORTModelForSeq2SeqLM.from_pretrained(os.path.join(to_onnx, "model"))
-    onnx_translation = pipeline("translation_ru_to_en", model=model, tokenizer=tokenizer)
+# @app.on_event("startup")
+# def get_translation(text: str) -> str:
+#     global onnx_translation
+#     to_onnx = '/home/gh58093lm/model_v1/'
+#     tokenizer = AutoTokenizer.from_pretrained(os.path.join(to_onnx, "tokenizer"))
+#     model = ORTModelForSeq2SeqLM.from_pretrained(os.path.join(to_onnx, "model"))
+#     onnx_translation = pipeline("translation_ru_to_en", model=model, tokenizer=tokenizer)
 
-    return onnx_translation
+#     return onnx_translation
 
 
 @app.get("/")
@@ -88,7 +88,7 @@ async def translate_text(request: TranslationRequest):
     """
     Эндпоинт перевода.
     """
-    translated_text = onnx_translation(request.text)
+    translated_text = perform_translation(request=request)
     print(translated_text)
 
     return TranslationResponse(translated_text=translated_text)
