@@ -44,10 +44,12 @@ app.mount("/static", StaticFiles(directory=static_dir), name="static")
 templates_dir = os.path.join(os.path.dirname(__file__), "templates")
 templates = Jinja2Templates(directory=templates_dir)
 
+
 @app.get("/")
 def read_root(request: Request = None):
     return templates.TemplateResponse("index.html", {"request": request, "api_token": settings.api_token})
     
+
 @app.get("/add_translation")
 def get_translation_page(type: str = Query(..., description="Type of translation page: 'word' or 'phrase'"), request: Request = None):
     if type == "word":
@@ -57,6 +59,16 @@ def get_translation_page(type: str = Query(..., description="Type of translation
     else:
         return {"error": "Invalid type. Use 'word' or 'phrase'."}
 
+
+@app.get("/add_pop_up")
+def get_pop_up_page(type: str = Query(..., description="Type of translation page: 'word' or 'phrase'"), request: Request = None):
+    if type == "rate":
+        return templates.TemplateResponse(f"pop-ups/pop_up_rate.html", {"request": request, "api_token": settings.api_token})
+    elif type == "wrong":
+        return templates.TemplateResponse(f"pop-ups/pop_up_wrong.html", {"request": request, "api_token": settings.api_token})
+    else:
+        return {"error": "Invalid type. Use 'word' or 'phrase'."}
+    
 
 @api_router.post("/translate", status_code=200, response_model=TranslationResponse, dependencies=[Depends(verify_token)])
 async def translate_text(request: TranslationRequest):
@@ -68,12 +80,14 @@ async def translate_text(request: TranslationRequest):
 
     return TranslationResponse(translated_text=translated_text)
 
+
 @app.get("/keyboard/{keyboard_type}", response_class=HTMLResponse)#, dependencies=[Depends(verify_token)])
 async def load_keyboard(request: Request, keyboard_type: str):
     try:
         return templates.TemplateResponse(f"keyboard/keyboard-{keyboard_type}.html", {"request": request})
     except:
         return HTMLResponse(content="Keyboard not found", status_code=404)
+
 
 #===WORD===
 @api_router.post("/add/word", status_code=201, response_model=Word, dependencies=[Depends(verify_token)])
@@ -109,7 +123,6 @@ async def search_words(
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     return results
-
 
 
 #===PHRASE===

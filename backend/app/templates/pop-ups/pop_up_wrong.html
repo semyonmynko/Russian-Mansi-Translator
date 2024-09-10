@@ -4,7 +4,8 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Переводчик мансийского языка</title>
-	<link rel="stylesheet" href="../css/style.css">
+	<link rel="icon" href="{{ url_for('static', path='images/Favicon.png') }}" type="image/png">
+	<link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -13,7 +14,7 @@
 	<section class="pop_up__wrap">
 		<div class="cross__wrap">
 			<div class="icon_button cross">
-				<a href="">
+				<a href="/">
 					<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_6_560)">
 						<path fill-rule="evenodd" clip-rule="evenodd" d="M59.1722 64L0 4.82782L4.82781 1.50135e-06L64 59.1722L59.1722 64Z" fill="#0E0909"/>
 						<path fill-rule="evenodd" clip-rule="evenodd" d="M64 4.82781L4.82782 64L1.18773e-06 59.1722L59.1722 0L64 4.82781Z" fill="#0E0909"/></g><defs><clipPath id="clip0_6_560"><rect width="64" height="64" fill="white"/></clipPath></defs>
@@ -26,9 +27,16 @@
 				<h1>Сообщите об ошибке</h1>
 				<p>Пожалуйста, в поле ниже опишите ошибку, которая у вас возникла</p>
 				<textarea type="text" placeholder="Опишите ошибку"></textarea>
-				<button href="" class="button_red">Отправить</button>
+				<button onclick="sendError()" class="button_red">Отправить</button>
 			</div>
 		</div>
 	</section>
+	<script>
+	function sendError(star) {
+		if (confirm('Спасибо за бдительность! Мы обязательно все исправим и станем еще лучше')){
+			window.location.href = '/';
+		}
+	}	
+	</script>
 </body>
 </html>
