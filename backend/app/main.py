@@ -5,6 +5,8 @@ from fastapi.templating import Jinja2Templates
 from starlette.requests import Request
 from fastapi.responses import HTMLResponse
 import os
+from transformers import AutoTokenizer, pipeline
+from optimum.onnxruntime import ORTModelForSeq2SeqLM
 
 from app.ml_models.translation_model import perform_translation
 from app.schemas.translation import TranslationRequest, TranslationResponse
@@ -45,6 +47,17 @@ templates_dir = os.path.join(os.path.dirname(__file__), "templates")
 templates = Jinja2Templates(directory=templates_dir)
 
 
+@app.on_event("startup")
+def get_translation(text: str) -> str:
+    global onnx_translation
+    to_onnx = '/home/gh58093lm/model_v1/'
+    tokenizer = AutoTokenizer.from_pretrained(os.path.join(to_onnx, "tokenizer"))
+    model = ORTModelForSeq2SeqLM.from_pretrained(os.path.join(to_onnx, "model"))
+    onnx_translation = pipeline("translation_ru_to_en", model=model, tokenizer=tokenizer)
+
+    return onnx_translation
+
+
 @app.get("/")
 def read_root(request: Request = None):
     return templates.TemplateResponse("index.html", {"request": request, "api_token": settings.api_token})
@@ -75,7 +88,7 @@ async def translate_text(request: TranslationRequest):
     """
     Эндпоинт перевода.
     """
-    translated_text = perform_translation(request=request)
+    translated_text = onnx_translation(request.text)
     print(translated_text)
 
     return TranslationResponse(translated_text=translated_text)
