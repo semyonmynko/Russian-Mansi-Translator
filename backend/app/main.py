@@ -5,8 +5,8 @@ from fastapi.templating import Jinja2Templates
 from starlette.requests import Request
 from fastapi.responses import HTMLResponse
 import os
-from transformers import AutoTokenizer, pipeline
-from optimum.onnxruntime import ORTModelForSeq2SeqLM
+# from transformers import AutoTokenizer, pipeline
+# from optimum.onnxruntime import ORTModelForSeq2SeqLM
 
 from app.ml_models.translation_model import perform_translation
 from app.schemas.translation import TranslationRequest, TranslationResponse
