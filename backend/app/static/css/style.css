@@ -820,7 +820,7 @@ h2{
 	flex-direction: row;
 }
 
-.form_links h2{
+.form_links h2 {
 	font-size: 28px;
 	color: var(--color-red);
 	text-align: left;
@@ -840,4 +840,95 @@ h2{
 
 .links li p {
 	margin-left: 6px;
+}
+
+.thematic__wrap {
+	margin-bottom: 38px;
+}
+
+.thematic__wrap .container {
+	width: 808px;
+	margin: 0 auto;
+}
+
+.thematic__wrap form {
+	margin-bottom: 12px;
+}
+
+.check_box {
+	transition-duration: 0.2s;
+	border: 1px solid rgba(0, 0, 0, 0.5);
+	display: flex;
+	flex-direction: row;
+	padding: 8px;
+	align-items: center;
+	justify-content: start;
+	border-radius: 2px;
+	transition-duration: 0.2s;
+}
+
+.check_box svg {
+	padding: 4px;
+	border: 1px solid rgba(0, 0, 0, 0.5);
+	transition-duration: 0.2s;
+}
+
+.check_box p {
+	margin-left: 10px;
+	color: rgba(0, 0, 0, 0.5);
+}
+
+.checks li {
+	display: flex;
+	justify-content: start;
+	margin-right: 10px;
+	margin-bottom: 10px;
+}
+
+.checks li:last-child {
+	margin-right: 0;
+}
+
+.check_box svg path {
+	fill: none;
+	transition-duration: 0.2s;
+}
+
+.checks {
+	display: flex;
+	flex-direction: row;
+	justify-content: left;
+	flex-wrap: wrap;
+}
+
+.active_box svg path {
+	fill: var(--color-red);
+	transition-duration: 0.2s;
+}
+
+.active_box svg {
+	border: 1px solid rgba(0, 0, 0, 1.0);
+}
+
+.active_box p {
+	color: var(--color-black);
+}
+
+.active_box {
+	border: 1px solid rgba(0, 0, 0, 1.0);
+}
+
+.check_box:hover {
+	border: 1px solid rgba(0, 0, 0, 1.0);
+	cursor: pointer;
+}
+
+.check_box:hover svg path {
+	fill: rgba(0, 0, 0, 0.5);
+	transition-duration: 0.2s;
+}
+
+.mini8 .examples_translation__wrap {
+	width: 808px;
+	margin-right: 0;
 }
