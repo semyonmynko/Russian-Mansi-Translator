@@ -443,14 +443,7 @@ h2{
 	bottom: 0;
 	background-color: var(--color-red);
 	width: 100%;
-    visibility: hidden;  /* Невидимая */
- 	opacity: 0;
- }
-
- .keyboard__wrap.visible {
-     visibility: visible;
-     opacity: 1;
- }
+}
 
 .keyboard{
     padding: 24px 0;
@@ -757,4 +750,67 @@ h2{
 
 .button_lever:last-child{
 	margin-right: 0px;
+}
+
+.search__wrap {
+	margin-bottom: 48px;
+}
+
+.search__wrap .container {
+	width: 808px;
+	margin: 0 auto;
+}
+
+.form_search ul li input {
+	font-family: "Montserrat", sans-serif;
+	font-optical-sizing: auto;
+	font-size: 20px;
+	font-weight: normal;
+	outline: none;
+	border: none;
+	width: 100%;
+	padding-left: 18px;
+}
+
+.form_search ul li {
+	display: flex;
+	flex-direction: row;
+	border: 1px solid rgba(0, 0, 0, 0.5);
+	border-radius: 2px;
+	width: 808px;
+}
+
+.form_search h2{
+	font-size: 28px;
+	color: var(--color-red);
+	text-align: center;
+	margin-bottom: 12px;
+}
+
+.form_search p{
+	text-align: center;
+	margin-bottom: 24px;
+}
+
+.form_search ul li button {
+	outline: none;
+	border-radius: none;
+	padding: 12px;
+	border: none;
+	cursor: pointer;
+	background: var(--color-white);
+	transition-duration: 0.2s;
+}
+
+.form_search ul li button svg path{
+	transition-duration: 0.2s;
+}
+
+.form_search ul li button:hover svg path{
+	fill: var(--color-red);
+	transition-duration: 0.2s;
+}
+
+.mini8 {
+	width: 808px;
 }
