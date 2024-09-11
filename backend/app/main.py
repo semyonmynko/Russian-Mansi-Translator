@@ -50,7 +50,7 @@ templates = Jinja2Templates(directory=templates_dir)
 @app.on_event("startup")
 def load_model():
     global onnx_translation
-    to_onnx = '/home/gh58093lm/model_v1/'
+    to_onnx = '/home/gh58093lm/model_onnx_v1/'
     tokenizer = AutoTokenizer.from_pretrained(os.path.join(to_onnx, "tokenizer"), local_files_only=True)
     model = ORTModelForSeq2SeqLM.from_pretrained(os.path.join(to_onnx, "model"), local_files_only=True)
     onnx_translation = pipeline("translation_ru_to_en", model=model, tokenizer=tokenizer)
