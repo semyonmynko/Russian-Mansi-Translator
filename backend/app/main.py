@@ -85,7 +85,7 @@ async def translate_text(request: TranslationRequest):
     """
     Эндпоинт перевода.
     """
-    translated_text = onnx_translation(request=request.text)[0]['translation_text']
+    translated_text = onnx_translation(request.text)[0]['translation_text']
     print(translated_text)
 
     return TranslationResponse(translated_text=translated_text)
