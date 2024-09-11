@@ -814,3 +814,30 @@ h2{
 .mini8 {
 	width: 808px;
 }
+
+.links li {
+	display: flex;
+	flex-direction: row;
+}
+
+.form_links h2{
+	font-size: 28px;
+	color: var(--color-red);
+	text-align: left;
+	margin-bottom: 12px;
+}
+
+.form_links p{
+	text-align: left;
+	margin-bottom: 24px;
+}
+
+.link {
+	font-weight: 600;
+	color: var(--color-red);
+	text-decoration: underline;
+}
+
+.links li p {
+	margin-left: 6px;
+}
