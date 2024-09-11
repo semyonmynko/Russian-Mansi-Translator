@@ -4,9 +4,10 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.requests import Request
 from fastapi.responses import HTMLResponse
+import time
+import torch
 import os
-from transformers import AutoTokenizer, pipeline
-from optimum.onnxruntime import ORTModelForSeq2SeqLM
+from transformers import M2M100ForConditionalGeneration, M2M100Tokenizer
 
 from app.ml_models.translation_model import perform_translation
 from app.schemas.translation import TranslationRequest, TranslationResponse
@@ -49,11 +50,16 @@ templates = Jinja2Templates(directory=templates_dir)
 
 @app.on_event("startup")
 def load_model():
-    global onnx_translation
-    to_onnx = '/home/gh58093lm/model_onnx_v1/'
-    tokenizer = AutoTokenizer.from_pretrained(os.path.join(to_onnx, "tokenizer"), local_files_only=True)
-    model = ORTModelForSeq2SeqLM.from_pretrained(os.path.join(to_onnx, "model"), local_files_only=True)
-    onnx_translation = pipeline("translation_ru_to_en", model=model, tokenizer=tokenizer)
+    global model, tokenizer
+    start_init_time = time.time()
+    model_name = "/home/gh58093lm/model_checkpoint_v1/"
+    model = M2M100ForConditionalGeneration.from_pretrained(model_name)
+    tokenizer = M2M100Tokenizer.from_pretrained(model_name)
+    model.eval()
+    end_init_time = time.time()
+    print(f"""
+        Initialize time: {end_init_time - start_init_time:.3f}s
+    """)
 
 @app.get("/")
 def read_root(request: Request = None):
@@ -85,10 +91,23 @@ async def translate_text(request: TranslationRequest):
     """
     Эндпоинт перевода.
     """
-    translated_text = onnx_translation(request.text)[0]['translation_text']
-    print(translated_text)
 
-    return TranslationResponse(translated_text=translated_text)
+    start_pred_time = time.time()
+    sentence = request.text
+    inputs = tokenizer(sentence, truncation=True, padding='max_length', max_length=128)
+    input_ids = torch.tensor(inputs['input_ids']).unsqueeze(0)
+    generated_ids = model.generate(input_ids, max_length=200, num_beams=5, early_stopping=True)
+
+    pred = tokenizer.decode(generated_ids[0], skip_special_tokens=True)
+    pred = pred.replace('__en__ ', '')
+    end_pred_time = time.time()
+
+    print(f"""
+        Prediction time: {end_pred_time - start_pred_time:.3f}s
+        Request: {sentence} -> Output: {pred}
+    """)
+
+    return TranslationResponse(translated_text=pred)
 
 
 @app.get("/keyboard/{keyboard_type}", response_class=HTMLResponse)#, dependencies=[Depends(verify_token)])
