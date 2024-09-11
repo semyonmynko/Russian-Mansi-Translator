@@ -5,9 +5,9 @@ from fastapi.templating import Jinja2Templates
 from starlette.requests import Request
 from fastapi.responses import HTMLResponse
 import time
-import torch
+#import torch
 import os
-from transformers import M2M100ForConditionalGeneration, M2M100Tokenizer
+#from transformers import M2M100ForConditionalGeneration, M2M100Tokenizer
 
 from app.ml_models.translation_model import perform_translation
 from app.schemas.translation import TranslationRequest, TranslationResponse
@@ -48,22 +48,37 @@ templates_dir = os.path.join(os.path.dirname(__file__), "templates")
 templates = Jinja2Templates(directory=templates_dir)
 
 
-@app.on_event("startup")
-def load_model():
-    global model, tokenizer
-    start_init_time = time.time()
-    model_name = "/home/gh58093lm/model_checkpoint_v1/"
-    model = M2M100ForConditionalGeneration.from_pretrained(model_name)
-    tokenizer = M2M100Tokenizer.from_pretrained(model_name)
-    model.eval()
-    end_init_time = time.time()
-    print(f"""
-        Initialize time: {end_init_time - start_init_time:.3f}s
-    """)
+# @app.on_event("startup")
+# def load_model():
+#     global model, tokenizer
+#     start_init_time = time.time()
+#     model_name = "/home/gh58093lm/model_checkpoint_v1/"
+#     model = M2M100ForConditionalGeneration.from_pretrained(model_name)
+#     tokenizer = M2M100Tokenizer.from_pretrained(model_name)
+#     model.eval()
+#     end_init_time = time.time()
+#     print(f"""
+#         Initialize time: {end_init_time - start_init_time:.3f}s
+#     """)
 
 @app.get("/")
 def read_root(request: Request = None):
     return templates.TemplateResponse("index.html", {"request": request, "api_token": settings.api_token})
+
+
+@app.get("/dict")
+def read_root(request: Request = None):
+    return templates.TemplateResponse("dict.html", {"request": request, "api_token": settings.api_token})
+
+
+@app.get("/links")
+def read_root(request: Request = None):
+    return templates.TemplateResponse("links.html", {"request": request, "api_token": settings.api_token})
+
+
+@app.get("/thematic")
+def read_root(request: Request = None):
+    return templates.TemplateResponse("thematic.html", {"request": request, "api_token": settings.api_token})
     
 
 @app.get("/add_translation")

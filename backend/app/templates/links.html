@@ -4,7 +4,8 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Переводчик мансийского языка</title>
-	<link rel="stylesheet" href="css/style.css">
+	<link rel="icon" href="{{ url_for('static', path='images/Favicon.png') }}" type="image/png">
+	<link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -12,7 +13,7 @@
 <body>
 	<section class="header__wrap">
 		<header class="header">
-			<a href="" class="logotype">
+			<a class="logotype" href="/">
 				<div class="logotype_img">
 					<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_37_408)">
 						<path fill-rule="evenodd" clip-rule="evenodd" d="M16.7719 35.313C15.0679 35.313 13.6753 35.3404 13.6753 35.3743C13.6753 35.7576 13.9515 37.3768 14.0753 37.7015C14.3449 38.4225 15.0549 39.2321 15.7206 39.5776L15.929 39.6871L17.7489 37.6715C18.752 36.5646 19.6366 35.5803 19.7186 35.4851L19.8685 35.3143H16.7719V35.313Z" fill="white"/>
@@ -30,20 +31,20 @@
 			</a>
 			<nav>
 				<ul class="menu">
-					<li><a href="">Добавить слово</a></li>
-					<li><a href="">Полезные материалы</a></li>
-					<li><a href="">Словарь</a></li>
-					<li><a href="">Тематический корпус</a></li>
+					<li><a href="/add_translation?type=word">Добавить слово</a></li>
+					<li><a href="/links">Полезные материалы</a></li>
+					<li><a href="/dict">Словарь</a></li>
+					<li><a href="/thematic">Тематический корпус</a></li>
 				</ul>
 			</nav>
 		</header>
 		<div class="tittle_background_mini__warp">
 			<div class="big_patterns_bg">
-				<img src="images/big_pattern_bg_mini.svg">
-				<img src="images/big_pattern_bg_mini.svg">
+				<img src="{{ url_for('static', path='images/big_pattern_bg_mini.svg') }}">
+				<img src="{{ url_for('static', path='images/big_pattern_bg_mini.svg') }}">
 			</div>
 			<div class="pattern_line_bg">
-				<img src="images/pattern_line_bg.svg">
+				<img src="{{ url_for('static', path='images/pattern_line_bg.svg') }}">
 			</div>
 		</div>
 		<div class="tittle__wrap">
