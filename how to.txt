@@ -1,6 +1,10 @@
-python -m venv .venv
-poetry install 
-poetry run uvicorn app.main:app --reload
+python 3.12.3
 
-alembic revision --autogenerate -m "Initial migration for multiple tables"
-alembic upgrade head
+cd backend/
+python -m venv .venv
+source .venv/bin/activate
+
+pip install -r requirements.txt
+
+export API_TOKEN=your_actual_api_token
+uvicorn app.main:app --reload
