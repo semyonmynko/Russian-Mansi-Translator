@@ -7,7 +7,7 @@ from app.models.word import WordTranslation
 from app.schemas.word import WordCreate, WordUpdate
 
 class CRUDWord(CRUDBase[WordTranslation, WordCreate, WordUpdate]):
-    def search(self, db: Session, query: str, language: str, skip: int = 0, limit: int = 100) -> List[WordTranslation]:
+    def search(self, db: Session, query: str, language: str, skip: int = 0, limit: int = 100):
         """
         Регистронезависимый поиск слова в зависимости от указанного языка.
         """
