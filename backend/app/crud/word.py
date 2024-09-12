@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import func
+from sqlalchemy.sql.expression import func as sql_func
 
 from app.crud.base import CRUDBase
 from app.models.word import WordTranslation
@@ -19,6 +20,6 @@ class CRUDWord(CRUDBase[WordTranslation, WordCreate, WordUpdate]):
         else:
             raise ValueError("Unsupported language. Choose 'mansi' or 'russian'.")
 
-        return db.query(self.model).filter(filter_condition).distinct().offset(skip).limit(limit).all()
+        return db.query(self.model).filter(filter_condition).distinct().order_by(sql_func.random()).offset(skip).limit(limit).all()
 
 word = CRUDWord(WordTranslation)

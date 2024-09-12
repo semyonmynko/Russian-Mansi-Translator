@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import func, and_
+from sqlalchemy.sql.expression import func as sql_func
 from typing import Optional, List
 
 
@@ -43,6 +44,6 @@ class CRUDPhrase(CRUDBase[PhraseTranslation, PhraseCreate, PhraseUpdate]):
                 filter_condition = topic_condition
 
         # Выполняем запрос с фильтрацией
-        return db.query(self.model).filter(filter_condition).distinct().offset(skip).limit(limit).all()
+        return db.query(self.model).filter(filter_condition).distinct().order_by(sql_func.random()).offset(skip).limit(limit).all()
 
 phrase = CRUDPhrase(PhraseTranslation)
