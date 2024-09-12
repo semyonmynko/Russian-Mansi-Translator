@@ -43,6 +43,6 @@ class CRUDPhrase(CRUDBase[PhraseTranslation, PhraseCreate, PhraseUpdate]):
                 filter_condition = topic_condition
 
         # Выполняем запрос с фильтрацией
-        return db.query(self.model).filter(filter_condition).offset(skip).limit(limit).all()
+        return db.query(self.model).filter(filter_condition).distinct().offset(skip).limit(limit).all()
 
 phrase = CRUDPhrase(PhraseTranslation)
