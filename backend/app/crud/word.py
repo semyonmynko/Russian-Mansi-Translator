@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import func
+from sqlalchemy.sql.expression import func as sql_func
 
 from app.crud.base import CRUDBase
 from app.models.word import WordTranslation
@@ -11,7 +12,7 @@ class CRUDWord(CRUDBase[WordTranslation, WordCreate, WordUpdate]):
         Регистронезависимый поиск слова в зависимости от указанного языка.
         """
         search_query = query.lower()  # Привести запрос к нижнему регистру
-        
+
         if language == "mansi":
             filter_condition = func.lower(self.model.mansi_word).like(f"%{search_query}%")
         elif language == "russian":
@@ -19,6 +20,14 @@ class CRUDWord(CRUDBase[WordTranslation, WordCreate, WordUpdate]):
         else:
             raise ValueError("Unsupported language. Choose 'mansi' or 'russian'.")
 
-        return db.query(self.model).filter(filter_condition).offset(skip).limit(limit).all()
+        # Создаем подзапрос с фильтрацией и уникальными записями
+        subquery = db.query(self.model).filter(filter_condition).distinct().subquery()
+
+        # Выполняем запрос к подзапросу с случайной сортировкой
+        query = db.query(self.model).from_statement(
+            db.query(subquery).order_by(sql_func.random()).offset(skip).limit(limit).statement
+        )
+
+        return query.all()
 
 word = CRUDWord(WordTranslation)
