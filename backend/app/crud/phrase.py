@@ -43,7 +43,14 @@ class CRUDPhrase(CRUDBase[PhraseTranslation, PhraseCreate, PhraseUpdate]):
             else:
                 filter_condition = topic_condition
 
-        # Выполняем запрос с фильтрацией
-        return db.query(self.model).filter(filter_condition).distinct().order_by(sql_func.random()).offset(skip).limit(limit).all()
+        # Выполняем запрос с фильтрацией и уникальными записями
+        subquery = db.query(self.model).filter(filter_condition).distinct().subquery()
+        
+        # Выполняем запрос к подзапросу с случайной сортировкой
+        query = db.query(self.model).from_statement(
+            db.query(subquery).order_by(sql_func.random()).offset(skip).limit(limit).statement
+        )
+        
+        return query.all()
 
 phrase = CRUDPhrase(PhraseTranslation)
