@@ -4,6 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.requests import Request
 from fastapi.responses import HTMLResponse
+from typing import List, Optional
 import time
 import torch
 import os
@@ -189,9 +190,9 @@ async def add_phrase(
 
 @api_router.get("/search/phrase", status_code=200, response_model=list[Phrase], dependencies=[Depends(verify_token)])
 async def search_phrases(
-    query: str, 
+    query: Optional[str] = None,
     language: str = Query(..., regex="^(mansi|russian)$"), 
-    topic: str = None,
+    topic: Optional[str] = None,
     skip: int = 0, 
     limit: int = 100, 
     db: Session = Depends(get_db)
@@ -199,6 +200,9 @@ async def search_phrases(
     """
     Эндпоинт для поиска фраз по заданному запросу в указанном языке.
     """
+    if not query and not topic:
+        raise HTTPException(status_code=400, detail="Either query or topic must be provided.")
+    
     try:
         results = phrase.search(db, query=query, language=language, topic=topic, skip=skip, limit=limit)
     except ValueError as e:
