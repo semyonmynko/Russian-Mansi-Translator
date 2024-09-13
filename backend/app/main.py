@@ -192,7 +192,7 @@ async def add_phrase(
 async def search_phrases(
     query: Optional[str] = None,
     language: str = Query(..., regex="^(mansi|russian)$"), 
-    topic: Optional[str] = None,
+    topic: Optional[str] = None,  # Ожидаем строку, которая может быть пустой
     skip: int = 0, 
     limit: int = 100, 
     db: Session = Depends(get_db)
@@ -203,10 +203,14 @@ async def search_phrases(
     if not query and not topic:
         raise HTTPException(status_code=400, detail="Either query or topic must be provided.")
     
+    # Парсинг темы: если тема передана, разбиваем её по запятым
+    topics = topic.split(",") if topic else None
+
     try:
-        results = phrase.search(db, query=query, language=language, topic=topic, skip=skip, limit=limit)
+        results = phrase.search(db, query=query, language=language, topic=topics, skip=skip, limit=limit)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+    
     return results
 
 

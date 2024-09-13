@@ -14,12 +14,12 @@ class CRUDPhrase(CRUDBase[PhraseTranslation, PhraseCreate, PhraseUpdate]):
         db: Session,
         query: Optional[str],
         language: str,
-        topic: Optional[str] = None,
+        topic: Optional[List[str]] = None,  # Изменяем тип на список строк
         skip: int = 0,
         limit: int = 100
     ) -> List[PhraseTranslation]:
         """
-        Регистронезависимый поиск фраз с возможной фильтрацией по теме.
+        Регистронезависимый поиск фраз с возможной фильтрацией по темам (одна или несколько тем).
         """
         if not query and not topic:
             raise ValueError("Either query or topic must be provided.")
@@ -35,9 +35,10 @@ class CRUDPhrase(CRUDBase[PhraseTranslation, PhraseCreate, PhraseUpdate]):
             else:
                 raise ValueError("Unsupported language. Choose 'mansi' or 'russian'.")
 
-        # Если указана тема, добавляем фильтр по теме
-        if topic:
-            topic_condition = func.lower(self.model.topic).like(f"%{topic.lower()}%")
+        # Если указаны темы, добавляем фильтр по темам
+        if topic and len(topic) > 0:
+            # Применяем фильтрацию с оператором IN для списка тем
+            topic_condition = self.model.topic.in_(topic)
             if filter_condition is not None:
                 filter_condition = and_(filter_condition, topic_condition)
             else:

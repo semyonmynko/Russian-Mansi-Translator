@@ -3,9 +3,10 @@ let isShiftActive = false;
 let currentLanguage = 'russian'; // Язык по умолчанию — русский
 let focused = null; // Переменная для хранения текущего активного поля ввода
 	
-async function searchInDictionary(query, language) {
-    // const sourceLang = document.getElementById("source_lang").value;
-    // const targetLang = document.getElementById("target_lang").value;
+async function searchInDictionary(query, language, word = true) {
+    console.log(query, language, word)
+    const ids = getActiveCheckboxIds()
+
     if (currentLanguage === 'russian') {
         sourceLang = 'russian';
         targetLang = 'mansi';
@@ -14,23 +15,8 @@ async function searchInDictionary(query, language) {
         targetLang = 'russian';
     }
 
-    // Поиск слова
-    const wordResponse = await fetch(`/search/word?query=${query}&language=${language}&limit=9`,{
-    method: "GET",
-    headers: {
-        "Authorization": `Bearer ${apiToken}`, // Добавляем заголовок Authorization
-        "Content-Type": "application/json"
-        }
-    });
-
-    if (wordResponse.ok) {
-        const words = await wordResponse.json();
-        console.log("Слова с API:", words);
-        displayWords(words, language);
-    }
-
     // Поиск фразы
-    const phraseResponse = await fetch(`/search/phrase?query=${query}&language=${language}&limit=5`,{
+    const phraseResponse = await fetch(`/search/phrase?query=${query}&topic=${ids}&language=${language}&limit=5`,{
     method: "GET",
     headers: {
         "Authorization": `Bearer ${apiToken}`, // Добавляем заголовок Authorization
@@ -42,6 +28,24 @@ async function searchInDictionary(query, language) {
         console.log("Фразы с API:", phrases);
         displayPhrases(phrases, language);
     }
+
+    // Поиск слова
+    if (word) {
+        const wordResponse = await fetch(`/search/word?query=${query}&language=${language}&limit=9`,{
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${apiToken}`, // Добавляем заголовок Authorization
+            "Content-Type": "application/json"
+            }
+        });
+
+        if (wordResponse.ok) {
+            const words = await wordResponse.json();
+            console.log("Слова с API:", words);
+            displayWords(words, language);
+        }
+    }
+
 }
 
 // Функция для отображения найденных слов
@@ -178,10 +182,10 @@ function handleEnter() {
     toggleKeyboard();
 }
 
-function startSearch() {
+function startSearch(word=true) {
     const inputText = document.getElementById("inputText").value;
     console.log(inputText)
-    searchInDictionary(inputText, currentLanguage);
+    searchInDictionary(inputText, currentLanguage, word=word);
 }
 
 function handleTab() {
@@ -204,4 +208,33 @@ function toggleCapsLock() {
 function toggleShift() {
     isShiftActive = !isShiftActive;
     loadKeyboard(currentLanguage); // Перезагружаем клавиатуру после изменения Shift
+}
+
+function toggleActive(element, defaultState = false) {
+    if (defaultState) {
+        element.classList.add('active_box');
+    } else {
+        element.classList.toggle('active_box');
+    }
+}
+
+document.querySelectorAll('.check_box').forEach(item => {
+    item.addEventListener('click', () => toggleActive(item));
+});
+
+// Пример использования функции с аргументом по умолчанию
+const firstItem = document.querySelector('.check_box');
+
+function getActiveCheckboxIds() {
+    const activeCheckboxes = document.querySelectorAll('.check_box.active_box');
+    const activeIds = [];
+
+    activeCheckboxes.forEach(item => {
+        const id = item.getAttribute('id');
+        if (id) {
+            activeIds.push(id);
+        }
+    });
+
+    return activeIds;
 }

@@ -58,86 +58,103 @@
 				<p>Введите слово или фразу, которую ищите, и выберите нужные фильтры</p>
 				<ul>
 					<li>
-						<input type="text" placeholder="Введите значение...">
-  						<button type="submit">
+						<input id="inputText" type="text" placeholder="Введите значение...">
+  						<a id="search" class="icon_button" onclick="startSearch(word=false)">
   							<svg width="24" height="24" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_200_1664)">
 								<path fill-rule="evenodd" clip-rule="evenodd" d="M22.8026 0.12291C12.9888 1.38257 4.66899 8.09649 1.43212 17.3687C0.435704 20.2228 0 22.8313 0 25.9418C0 29.0412 0.365397 31.3261 1.3221 34.2079C3.91621 42.023 10.1623 48.1947 18.0503 50.7369C20.6904 51.5877 23.0387 51.9461 25.9749 51.9461C29.0042 51.9461 31.3375 51.5781 34.0865 50.6666C35.904 50.0639 38.8492 48.6305 40.2736 47.6551L41.2726 46.9711L49.7956 55.4855L58.3186 64L61.1592 61.1584L64 58.3169L55.4881 49.7913L46.9762 41.2657L47.66 40.2664C48.6475 38.8235 50.087 35.8549 50.6811 34.0364C51.5952 31.2388 51.9498 28.9826 51.9498 25.9634C51.9498 24.8948 51.891 23.5442 51.819 22.9621C51.0872 17.0406 48.5253 11.7719 44.3436 7.58908C40.162 3.40611 34.895 0.843432 28.9752 0.111418C27.7311 -0.0423549 24.0369 -0.0354845 22.8026 0.12291ZM24.4381 8.10349C21.3677 8.38792 18.5391 9.38863 15.9221 11.1164C14.6164 11.9784 11.9942 14.6014 11.1324 15.9076C7.53322 21.3624 7.06355 27.992 9.86696 33.7707C10.8182 35.7313 11.6451 36.8719 13.3573 38.5848C15.0697 40.2975 16.21 41.1247 18.1699 42.0762C20.3231 43.1214 22.0856 43.6003 24.5875 43.8199C28.4969 44.163 32.5739 43.0906 36.0277 40.8104C37.3334 39.9483 39.9556 37.3253 40.8174 36.0192C44.4056 30.5809 44.8824 23.8743 42.0873 18.1561C41.2092 16.3594 40.3211 15.0927 38.9123 13.6273C37.0528 11.693 35.1886 10.3935 32.8727 9.41674C30.3537 8.35432 27.137 7.85353 24.4381 8.10349Z" fill="#0E0909"/></g><defs><clipPath id="clip0_200_1664"><rect width="64" height="64" fill="white"/></clipPath></defs>
 							</svg>
-  						</button>
+  						</a>
+						<a id="keyboard_icon" class="icon_button" onclick="toggleKeyboard()"><img src="{{ url_for('static', path='images/icons/keyboard.svg') }}"></a>
 					</li>
 				</ul>
 			</form>
 			<ul class="checks">
 				<li>
-					<a class="check_box">
+					<a class="check_box" id="0">
 						<svg width="16" height="16" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_214_2207)">
 							<path fill-rule="evenodd" clip-rule="evenodd" d="M64 14.2183L23.8478 54L0 30.3723L4.21718 26.1539L23.8478 45.6034L59.7828 10L64 14.2183Z" fill="#0E0909"/></g><defs><clipPath id="clip0_214_2207"><rect width="64" height="64" fill="white"/></clipPath></defs>
 						</svg>
-						<p>Война</p>
+						<p>Дом</p>
 					</a>
 				</li>
 				<li>
-					<a class="check_box">
+					<a class="check_box" id="5">
 						<svg width="16" height="16" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_214_2207)">
 							<path fill-rule="evenodd" clip-rule="evenodd" d="M64 14.2183L23.8478 54L0 30.3723L4.21718 26.1539L23.8478 45.6034L59.7828 10L64 14.2183Z" fill="#0E0909"/></g><defs><clipPath id="clip0_214_2207"><rect width="64" height="64" fill="white"/></clipPath></defs>
 						</svg>
-						<p>Семья</p>
+						<p>Города и страны</p>
 					</a>
 				</li>
 				<li>
-					<a class="check_box">
+					<a class="check_box" id="7">
 						<svg width="16" height="16" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_214_2207)">
 							<path fill-rule="evenodd" clip-rule="evenodd" d="M64 14.2183L23.8478 54L0 30.3723L4.21718 26.1539L23.8478 45.6034L59.7828 10L64 14.2183Z" fill="#0E0909"/></g><defs><clipPath id="clip0_214_2207"><rect width="64" height="64" fill="white"/></clipPath></defs>
 						</svg>
-						<p>История</p>
+						<p>Cказки</p>
 					</a>
 				</li>
 				<li>
-					<a class="check_box active_box">
+					<a class="check_box" id="8">
 						<svg width="16" height="16" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_214_2207)">
 							<path fill-rule="evenodd" clip-rule="evenodd" d="M64 14.2183L23.8478 54L0 30.3723L4.21718 26.1539L23.8478 45.6034L59.7828 10L64 14.2183Z" fill="#0E0909"/></g><defs><clipPath id="clip0_214_2207"><rect width="64" height="64" fill="white"/></clipPath></defs>
 						</svg>
-						<p>Математика</p>
+						<p>Вода и реки</p>
 					</a>
 				</li>
 				<li>
-					<a class="check_box">
+					<a class="check_box" id="13">
 						<svg width="16" height="16" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_214_2207)">
 							<path fill-rule="evenodd" clip-rule="evenodd" d="M64 14.2183L23.8478 54L0 30.3723L4.21718 26.1539L23.8478 45.6034L59.7828 10L64 14.2183Z" fill="#0E0909"/></g><defs><clipPath id="clip0_214_2207"><rect width="64" height="64" fill="white"/></clipPath></defs>
 						</svg>
-						<p>Физика</p>
+						<p>Животные</p>
 					</a>
 				</li>
 				<li>
-					<a class="check_box">
-						<svg width="16" height="16" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_214_2207)">
-							<path fill-rule="evenodd" clip-rule="evenodd" d="M64 14.2183L23.8478 54L0 30.3723L4.21718 26.1539L23.8478 45.6034L59.7828 10L64 14.2183Z" fill="#0E0909"/></g><defs><clipPath id="clip0_214_2207"><rect width="64" height="64" fill="white"/></clipPath></defs>
-						</svg>
-						<p>Политика</p>
-					</a>
-				</li>
-				<li>
-					<a class="check_box">
-						<svg width="16" height="16" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_214_2207)">
-							<path fill-rule="evenodd" clip-rule="evenodd" d="M64 14.2183L23.8478 54L0 30.3723L4.21718 26.1539L23.8478 45.6034L59.7828 10L64 14.2183Z" fill="#0E0909"/></g><defs><clipPath id="clip0_214_2207"><rect width="64" height="64" fill="white"/></clipPath></defs>
-						</svg>
-						<p>Песни</p>
-					</a>
-				</li>
-				<li>
-					<a class="check_box active_box">
-						<svg width="16" height="16" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_214_2207)">
-							<path fill-rule="evenodd" clip-rule="evenodd" d="M64 14.2183L23.8478 54L0 30.3723L4.21718 26.1539L23.8478 45.6034L59.7828 10L64 14.2183Z" fill="#0E0909"/></g><defs><clipPath id="clip0_214_2207"><rect width="64" height="64" fill="white"/></clipPath></defs>
-						</svg>
-						<p>Полиция</p>
-					</a>
-				</li>
-				<li>
-					<a class="check_box">
+					<a class="check_box" id="14">
 						<svg width="16" height="16" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_214_2207)">
 							<path fill-rule="evenodd" clip-rule="evenodd" d="M64 14.2183L23.8478 54L0 30.3723L4.21718 26.1539L23.8478 45.6034L59.7828 10L64 14.2183Z" fill="#0E0909"/></g><defs><clipPath id="clip0_214_2207"><rect width="64" height="64" fill="white"/></clipPath></defs>
 						</svg>
 						<p>Еда</p>
+					</a>
+				</li>
+				<li>
+					<a class="check_box" id="15">
+						<svg width="16" height="16" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_214_2207)">
+							<path fill-rule="evenodd" clip-rule="evenodd" d="M64 14.2183L23.8478 54L0 30.3723L4.21718 26.1539L23.8478 45.6034L59.7828 10L64 14.2183Z" fill="#0E0909"/></g><defs><clipPath id="clip0_214_2207"><rect width="64" height="64" fill="white"/></clipPath></defs>
+						</svg>
+						<p>Работа</p>
+					</a>
+				</li>
+				<li>
+					<a class="check_box" id="16">
+						<svg width="16" height="16" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_214_2207)">
+							<path fill-rule="evenodd" clip-rule="evenodd" d="M64 14.2183L23.8478 54L0 30.3723L4.21718 26.1539L23.8478 45.6034L59.7828 10L64 14.2183Z" fill="#0E0909"/></g><defs><clipPath id="clip0_214_2207"><rect width="64" height="64" fill="white"/></clipPath></defs>
+						</svg>
+						<p>Дети</p>
+					</a>
+				</li>
+				<li>
+					<a class="check_box" id="6">
+						<svg width="16" height="16" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_214_2207)">
+							<path fill-rule="evenodd" clip-rule="evenodd" d="M64 14.2183L23.8478 54L0 30.3723L4.21718 26.1539L23.8478 45.6034L59.7828 10L64 14.2183Z" fill="#0E0909"/></g><defs><clipPath id="clip0_214_2207"><rect width="64" height="64" fill="white"/></clipPath></defs>
+						</svg>
+						<p>Речь и заветы</p>
+					</a>
+				</li>
+				<li>
+					<a class="check_box" id="19">
+						<svg width="16" height="16" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_214_2207)">
+							<path fill-rule="evenodd" clip-rule="evenodd" d="M64 14.2183L23.8478 54L0 30.3723L4.21718 26.1539L23.8478 45.6034L59.7828 10L64 14.2183Z" fill="#0E0909"/></g><defs><clipPath id="clip0_214_2207"><rect width="64" height="64" fill="white"/></clipPath></defs>
+						</svg>
+						<p>Зима</p>
+					</a>
+				</li>
+				<li>
+					<a class="check_box" id="11">
+						<svg width="16" height="16" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_214_2207)">
+							<path fill-rule="evenodd" clip-rule="evenodd" d="M64 14.2183L23.8478 54L0 30.3723L4.21718 26.1539L23.8478 45.6034L59.7828 10L64 14.2183Z" fill="#0E0909"/></g><defs><clipPath id="clip0_214_2207"><rect width="64" height="64" fill="white"/></clipPath></defs>
+						</svg>
+						<p>Движение</p>
 					</a>
 				</li>
 			</ul>
@@ -147,16 +164,15 @@
 		<div class="container mini8">
 			<section class="examples_translation__wrap">
 				<h1>Результаты поиска</h1>
-				<ul>
-					<li><p class="target_example">Люди</p> <p class="target_example">работающие</p> <p class="target_example">на</p> <p class="target_example">одном</p> <p class="target_example">пароходе</p> долго думали, что им делать с этой находкой.</li>
-					<li><p class="target_example">Акв</p> <p class="target_example">на̄иӈха̄пт</p> <p class="target_example">рӯпитан</p> <p class="target_example">ма̄хум</p>, кāркамысь акваг матыр ва̄руӈкве.</li>
-				</ul>
-				<ul>
+				<ul id="phraseDictionary">
 					<li><p class="target_example">Люди</p> <p class="target_example">работающие</p> <p class="target_example">на</p> <p class="target_example">одном</p> <p class="target_example">пароходе</p> долго думали, что им делать с этой находкой.</li>
 					<li><p class="target_example">Акв</p> <p class="target_example">на̄иӈха̄пт</p> <p class="target_example">рӯпитан</p> <p class="target_example">ма̄хум</p>, кāркамысь акваг матыр ва̄руӈкве.</li>
 				</ul>
 			</section>
 		</div>
 	</section>
+	<section class="keyboard__wrap" id="keyboardSection"></section>
+	<script src="{{ url_for('static', path='js/keyboard_dict.js') }}"></script>
+	<script> const apiToken = "{{ api_token }}" </script>
 </body>
 </html>
